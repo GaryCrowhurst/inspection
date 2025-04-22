@@ -58,6 +58,9 @@
             background-color: rgba(0, 0, 0, 0.5);
             z-index: 50;
         }
+        .hidden {
+            display: none !important;
+        }
     </style>
 </head>
 
@@ -167,11 +170,11 @@
             <div id="checklistContainer"></div>
 
             <!-- Camera Modal (hidden by default) -->
-            <div id="cameraModal" class="camera-modal hidden">
+            <div id="cameraModal" class="camera-modal hidden" style="display: none;">
                 <div class="bg-white rounded-lg shadow-lg max-w-lg w-full">
                     <div class="p-4 border-b flex justify-between items-center">
                         <h3 class="text-lg font-bold">Take Photo</h3>
-                        <button id="closeModalBtn" class="text-gray-500 hover:text-gray-700">
+                        <button id="closeModalBtn" class="text-gray-500 hover:text-gray-700 p-2" style="cursor: pointer;">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                             </svg>
@@ -188,6 +191,7 @@
                             <button 
                                 id="cancelPhotoBtn" 
                                 class="px-4 py-2 bg-gray-500 text-white rounded-md flex items-center"
+                                onclick="stopCamera()"
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" class="icon mr-1" viewBox="0 0 24 24">
                                     <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -198,6 +202,7 @@
                             <button 
                                 id="capturePhotoBtn" 
                                 class="px-4 py-2 bg-blue-600 text-white rounded-md flex items-center"
+                                onclick="capturePhoto()"
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" class="icon mr-1" viewBox="0 0 24 24">
                                     <rect x="2" y="6" width="20" height="12" rx="2"></rect>
@@ -743,48 +748,156 @@
 
         // Start camera for taking a photo
         function startCamera(sectionId, taskId) {
+            // Store which task we're taking a photo for
             activeCamera = { sectionId, taskId };
             
-            cameraModal.classList.remove('hidden');
-            
-            navigator.mediaDevices.getUserMedia({ video: true })
-                .then(stream => {
-                    mediaStream = stream;
-                    cameraVideo.srcObject = stream;
-                    cameraVideo.play();
-                })
-                .catch(err => {
-                    console.error('Error accessing camera:', err);
-                    alert('Failed to access camera. Please check permissions and try again.');
-                    stopCamera();
+            try {
+                // Show modal first so user knows something is happening
+                cameraModal.classList.remove('hidden');
+                
+                // Simple file upload as backup if camera doesn't work
+                const fileInput = document.createElement('input');
+                fileInput.type = 'file';
+                fileInput.accept = 'image/*';
+                fileInput.style.display = 'none';
+                
+                fileInput.addEventListener('change', (e) => {
+                    if (e.target.files && e.target.files[0]) {
+                        handleFileUpload(sectionId, taskId, e);
+                        stopCamera(); // Close the camera modal
+                    }
                 });
+                
+                // Try to access camera
+                navigator.mediaDevices.getUserMedia({ video: true })
+                    .then(stream => {
+                        mediaStream = stream;
+                        cameraVideo.srcObject = stream;
+                        cameraVideo.play();
+                    })
+                    .catch(err => {
+                        console.error('Error accessing camera:', err);
+                        
+                        // If camera fails, show a message and offer alternative
+                        const errorMsg = document.createElement('div');
+                        errorMsg.className = 'bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4';
+                        errorMsg.innerHTML = `
+                            <p><strong>Camera access failed.</strong> You can upload a photo instead.</p>
+                            <button id="uploadInsteadBtn" class="mt-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                Upload Photo Instead
+                            </button>
+                        `;
+                        
+                        // Replace video with error message
+                        const videoContainer = cameraVideo.parentNode;
+                        videoContainer.insertBefore(errorMsg, cameraVideo);
+                        cameraVideo.style.display = 'none';
+                        
+                        // Add click event to upload button
+                        document.getElementById('uploadInsteadBtn').addEventListener('click', () => {
+                            fileInput.click();
+                        });
+                    });
+                
+                // Add the file input to the document (hidden)
+                document.body.appendChild(fileInput);
+            } catch (error) {
+                console.error('Error in startCamera:', error);
+                alert('Something went wrong. Please try again or use the "Add Photo" button instead.');
+                document.body.click(); // Force any click events to trigger
+                stopCamera(); // Try to close the modal
+            }
         }
 
         // Capture photo from camera
         function capturePhoto() {
-            if (!activeCamera) return;
-            
-            const canvas = document.createElement('canvas');
-            canvas.width = cameraVideo.videoWidth;
-            canvas.height = cameraVideo.videoHeight;
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(cameraVideo, 0, 0, canvas.width, canvas.height);
-            
-            const imgDataUrl = canvas.toDataURL('image/jpeg');
-            
-            addPhotoToTask(activeCamera.sectionId, activeCamera.taskId, imgDataUrl);
-            stopCamera();
+            try {
+                if (!activeCamera) {
+                    console.error('No active camera session');
+                    stopCamera();
+                    return;
+                }
+                
+                if (!cameraVideo.videoWidth) {
+                    console.error('Video stream not ready');
+                    alert('Video stream not ready. Please try again.');
+                    return;
+                }
+                
+                const canvas = document.createElement('canvas');
+                canvas.width = cameraVideo.videoWidth;
+                canvas.height = cameraVideo.videoHeight;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(cameraVideo, 0, 0, canvas.width, canvas.height);
+                
+                try {
+                    const imgDataUrl = canvas.toDataURL('image/jpeg');
+                    addPhotoToTask(activeCamera.sectionId, activeCamera.taskId, imgDataUrl);
+                } catch (e) {
+                    console.error('Error creating photo:', e);
+                    alert('Failed to capture photo. The camera may not be ready.');
+                }
+                
+                stopCamera();
+            } catch (error) {
+                console.error('Error in capturePhoto:', error);
+                alert('Failed to capture photo. Please try again or use "Add Photo" to upload an image.');
+                stopCamera();
+            }
         }
 
-        // Stop camera and close modal
+        // Stop camera and close modal with multiple fallbacks
         function stopCamera() {
-            if (mediaStream) {
-                mediaStream.getTracks().forEach(track => track.stop());
-                mediaStream = null;
+            console.log("Attempting to stop camera and close modal");
+            
+            try {
+                // Try to stop all tracks
+                if (mediaStream) {
+                    mediaStream.getTracks().forEach(track => {
+                        try {
+                            track.stop();
+                        } catch (e) {
+                            console.warn('Error stopping track:', e);
+                        }
+                    });
+                    mediaStream = null;
+                }
+            } catch (e) {
+                console.warn('Error stopping media stream:', e);
             }
             
-            cameraModal.classList.add('hidden');
-            activeCamera = null;
+            try {
+                // Reset video source
+                if (cameraVideo && cameraVideo.srcObject) {
+                    cameraVideo.srcObject = null;
+                    cameraVideo.style.display = '';
+                }
+                
+                // Remove any error messages
+                const errorMsg = document.querySelector('.bg-red-100');
+                if (errorMsg) {
+                    errorMsg.parentNode.removeChild(errorMsg);
+                }
+                
+                // Force the modal to be hidden with multiple approaches
+                if (cameraModal) {
+                    cameraModal.classList.add('hidden');
+                    cameraModal.style.display = 'none';
+                }
+                
+                activeCamera = null;
+            } catch (error) {
+                console.error('Error in stopCamera cleanup:', error);
+            }
+            
+            // Final fallback - force browser to refresh the DOM
+            setTimeout(() => {
+                try {
+                    window.dispatchEvent(new Event('resize'));
+                } catch (e) {
+                    console.warn('Error dispatching resize event:', e);
+                }
+            }, 100);
         }
 
         // Handle file upload
@@ -1107,11 +1220,29 @@
 
         // Initialize the app
         function initApp() {
+            // Add direct onclick handlers for camera
+            document.getElementById('closeModalBtn').onclick = stopCamera;
+            document.getElementById('cancelPhotoBtn').onclick = stopCamera;
+            document.getElementById('capturePhotoBtn').onclick = capturePhoto;
+            
             // Set up event listeners
-            capturePhotoBtn.addEventListener('click', capturePhoto);
-            cancelPhotoBtn.addEventListener('click', stopCamera);
             resetBtn.addEventListener('click', resetForm);
             downloadBtn.addEventListener('click', generateReport);
+            
+            // Allow clicking outside the modal to close it
+            cameraModal.addEventListener('click', (e) => {
+                // Only close if clicking the background, not the modal content
+                if (e.target === cameraModal) {
+                    stopCamera();
+                }
+            });
+            
+            // Add keyboard escape key to close modal
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && !cameraModal.classList.contains('hidden')) {
+                    stopCamera();
+                }
+            });
             
             // Student info form fields
             document.getElementById('studentName').addEventListener('input', (e) => {
