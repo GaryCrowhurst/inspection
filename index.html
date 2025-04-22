@@ -1,1305 +1,2511 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-GB">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Race Inspection Checklist</title>
-    <!-- Tailwind CSS for styling -->
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <!-- Simple blank favicon to prevent 404 errors -->
-    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+    <title>Motorsport Race Inspection Checklist</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
-        /* Custom styles to enhance Tailwind */
-        .task-completed {
-            background-color: rgba(209, 250, 229, 0.4); /* Light green background */
+        :root {
+            --primary: #00594F;
+            --secondary: #000000;
+            --success: #00C896;
+            --warning: #FFD200;
+            --danger: #FF3A2F;
+            --light: #ffffff;
+            --dark: #000000;
+            --grey: #64748b;
+            --accent: #9EE6CF;
         }
-        .icon {
-            display: inline-flex;
-            width: 1.25em;
-            height: 1.25em;
-            stroke: currentColor;
-            stroke-width: 2;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-            fill: none;
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        .thumbnail-container {
-            position: relative;
-            display: inline-block;
-            margin-right: 8px;
-            margin-bottom: 8px;
+        
+        body {
+            background-color: #f1f5f9;
+            color: var(--dark);
+            line-height: 1.6;
+            background-color: #f0fdf4;
         }
-        .remove-photo {
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            background-color: #ef4444;
+        
+        header {
+            background-color: var(--primary);
             color: white;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
+            padding: 1rem;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        header h1 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+        
+        .tab-nav {
             display: flex;
+            background-color: var(--light);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .tab-nav button {
+            flex: 1;
+            background: none;
+            border: none;
+            padding: 0.75rem 0.5rem;
+            font-weight: 600;
+            color: var(--grey);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .tab-nav button.active {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .student-info {
+            background-color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: var(--primary);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary);
+        }
+        
+        .btn-success {
+            background-color: var(--success);
+        }
+        
+        .btn-danger {
+            background-color: var(--danger);
+        }
+        
+        .btn:hover {
+            opacity: 0.9;
+        }
+        
+        .section-title {
+            margin: 1.5rem 0 1rem;
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 0.5rem;
+        }
+        
+        .checklist-item {
+            background-color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .checklist-header {
+            display: flex;
+            justify-content: space-between;
             align-items: center;
-            justify-content: center;
             cursor: pointer;
         }
-        .progress-bar {
-            transition: width 0.5s ease-in-out;
+        
+        .checklist-title {
+            font-weight: 600;
+            flex: 1;
         }
-        .camera-modal {
+        
+        .checklist-status {
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .status-pending {
+            background-color: #f1f5f9;
+            color: var(--grey);
+        }
+        
+        .status-pass {
+            background-color: #dcfce7;
+            color: var(--success);
+        }
+        
+        .status-fail {
+            background-color: #fee2e2;
+            color: var(--danger);
+        }
+        
+        .status-warning {
+            background-color: #fef3c7;
+            color: var(--warning);
+        }
+        
+        .checklist-content {
+            display: none;
+            padding-top: 1rem;
+            border-top: 1px solid #e2e8f0;
+            margin-top: 1rem;
+        }
+        
+        .checklist-content.active {
+            display: block;
+        }
+        
+        .guidance-text {
+            background-color: #f8fafc;
+            padding: 0.75rem;
+            border-left: 3px solid var(--primary);
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+        
+        .radio-group {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .radio-option input {
+            width: auto;
+        }
+        
+        .photo-container {
+            margin: 1rem 0;
+        }
+        
+        .photo-preview {
+            width: 100%;
+            height: 200px;
+            background-color: #f1f5f9;
+            border: 1px dashed #cbd5e1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            overflow: hidden;
+        }
+        
+        .photo-preview img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        
+        .progress-container {
+            margin: 1.5rem 0;
+        }
+        
+        .progress-bar {
+            height: 0.5rem;
+            background-color: #e2e8f0;
+            border-radius: 999px;
+            overflow: hidden;
+        }
+        
+        .progress-value {
+            height: 100%;
+            background-color: var(--success);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .action-buttons .btn {
+            flex: 1;
+        }
+        
+        .summary-section {
+            background-color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 1rem;
+            color: var(--grey);
+            font-size: 0.875rem;
+            margin-top: 2rem;
+        }
+        
+        /* Toast notifications */
+        .toast-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        
+        .toast {
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            border-radius: 4px;
+            width: 300px;
+            color: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: slideIn 0.3s forwards;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .toast-success {
+            background-color: var(--success);
+        }
+        
+        .toast-error {
+            background-color: var(--danger);
+        }
+        
+        .toast-info {
+            background-color: var(--primary);
+        }
+        
+        .toast-close {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        
+        /* Modal styles */
+        .modal {
+            display: none;
             position: fixed;
             top: 0;
             left: 0;
-            right: 0;
-            bottom: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            width: 100%;
+            height: 100%;
             background-color: rgba(0, 0, 0, 0.5);
-            z-index: 50;
+            z-index: 1000;
+            overflow: auto;
         }
-        .hidden {
-            display: none !important;
+        
+        .modal-content {
+            background-color: white;
+            margin: 10% auto;
+            width: 90%;
+            max-width: 600px;
+            border-radius: 8px;
+            overflow: hidden;
+            animation: modalFadeIn 0.3s;
+        }
+        
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .modal-header {
+            padding: 1rem;
+            background-color: var(--primary);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-title {
+            font-weight: 600;
+            font-size: 1.25rem;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        .modal-body {
+            padding: 1rem;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+        
+        .modal-footer {
+            padding: 1rem;
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            border-top: 1px solid #e2e8f0;
+        }
+        
+        /* Report preview styles */
+        .report-container {
+            padding: 20px;
+            background-color: white;
+        }
+        
+        .report-header {
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .report-title {
+            color: var(--primary);
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .report-subtitle {
+            color: var(--grey);
+            font-size: 16px;
+            margin-top: 5px;
+        }
+        
+        .report-metadata {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .report-metadata-item {
+            background-color: #f8fafc;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        
+        .report-metadata-label {
+            font-weight: bold;
+            color: var(--primary);
+            font-size: 14px;
+        }
+        
+        .report-metadata-value {
+            font-size: 16px;
+            margin-top: 5px;
+        }
+        
+        .report-section {
+            margin-bottom: 20px;
+        }
+        
+        .report-section-title {
+            color: var(--primary);
+            font-size: 18px;
+            font-weight: bold;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+        }
+        
+        .report-item {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 4px;
+            background-color: #f8fafc;
+        }
+        
+        .report-item-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .report-item-status {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .report-item-notes {
+            margin-top: 10px;
+            font-style: italic;
+        }
+        
+        .report-images {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .report-image {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 4px;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .report-footer {
+            margin-top: 30px;
+            text-align: center;
+            color: var(--grey);
+            font-size: 14px;
+        }
+        
+        /* For smaller mobile screens */
+        @media (max-width: 480px) {
+            .tab-nav button {
+                font-size: 0.8rem;
+                padding: 0.6rem 0.4rem;
+            }
+            
+            .checklist-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .checklist-status {
+                margin-top: 0.5rem;
+            }
+            
+            .radio-group {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .report-metadata {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
-
 <body>
-    <div id="app" class="min-h-screen bg-gray-50 flex flex-col">
-        <!-- Header -->
-        <header class="bg-blue-700 text-white p-4 shadow-md">
-            <h1 id="headerTitle" class="text-2xl font-bold text-center mb-2">Post-Race Inspection Checklist</h1>
-            <div class="mt-2 bg-blue-600 rounded-full h-6 overflow-hidden">
-                <div id="progressBar" class="bg-green-400 h-full rounded-full progress-bar" style="width: 0%"></div>
-            </div>
-            <p id="progressText" class="text-center text-white mt-1">0% Complete</p>
-        </header>
-
-        <!-- Main content -->
-        <main class="flex-grow p-4 max-w-4xl mx-auto w-full">
-            <!-- Inspection Information -->
-            <section class="bg-white rounded-lg shadow-md p-4 mb-6">
-                <h2 class="text-lg font-bold mb-4 text-blue-800">Inspection Information</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Student Name</label>
-                        <input
-                            type="text"
-                            id="studentName"
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md"
-                            placeholder="Enter student name"
-                        >
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Student ID</label>
-                        <input
-                            type="text"
-                            id="studentId"
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md"
-                            placeholder="Enter student ID"
-                        >
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Inspection Type</label>
-                        <select
-                            id="inspectionType"
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md"
-                        >
-                            <option value="pre-race">Pre-Race Inspection</option>
-                            <option value="during-race">During-Race Inspection</option>
-                            <option value="post-race" selected>Post-Race Inspection</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Date</label>
-                        <input
-                            type="date"
-                            id="inspectionDate"
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md"
-                        >
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Vehicle ID/Number</label>
-                        <input
-                            type="text"
-                            id="vehicleId"
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md"
-                            placeholder="Enter vehicle ID"
-                        >
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Race Event</label>
-                        <input
-                            type="text"
-                            id="raceEvent"
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md"
-                            placeholder="Enter race event name"
-                        >
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Car Class</label>
-                        <input
-                            type="text"
-                            id="carClass"
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md"
-                            placeholder="Enter car class"
-                        >
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Team Name</label>
-                        <input
-                            type="text"
-                            id="teamName"
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md"
-                            placeholder="Enter team name"
-                        >
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Scrutineer Name</label>
-                        <input
-                            type="text"
-                            id="scrutineerName"
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md"
-                            placeholder="Enter scrutineer name"
-                        >
-                    </div>
+    <header>
+        <h1>Motorsport Race Inspection Checklist</h1>
+        <p>Digital inspection tool for motorsport students</p>
+    </header>
+    
+    <div class="container">
+        <div class="tab-nav">
+            <button class="tab-btn active" data-tab="setup">Setup</button>
+            <button class="tab-btn" data-tab="pre-race">Pre-Race</button>
+            <button class="tab-btn" data-tab="during-race">During Race</button>
+            <button class="tab-btn" data-tab="post-race">Post-Race</button>
+            <button class="tab-btn" data-tab="report">Report</button>
+        </div>
+        
+        <!-- Setup Tab -->
+        <div id="setup" class="tab-content active">
+            <div class="student-info">
+                <h2 class="section-title">Student & Vehicle Information</h2>
+                
+                <div class="form-group">
+                    <label for="student-name">Student Name</label>
+                    <input type="text" id="student-name" placeholder="Enter your full name">
                 </div>
-            </section>
-
-            <!-- Checklist Container - Will be populated by JavaScript -->
-            <div id="checklistContainer"></div>
-
-            <!-- Camera Modal (hidden by default) -->
-            <div id="cameraModal" class="camera-modal hidden" style="display: none;">
-                <div class="bg-white rounded-lg shadow-lg max-w-lg w-full">
-                    <div class="p-4 border-b flex justify-between items-center">
-                        <h3 class="text-lg font-bold">Take Photo</h3>
-                        <button id="closeModalBtn" class="text-gray-500 hover:text-gray-700 p-2" style="cursor: pointer;">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                        </button>
+                
+                <div class="form-group">
+                    <label for="student-id">Student ID</label>
+                    <input type="text" id="student-id" placeholder="Enter your student ID">
+                </div>
+                
+                <div class="form-group">
+                    <label for="course">Course</label>
+                    <input type="text" id="course" placeholder="Enter your course name">
+                </div>
+                
+                <div class="form-group">
+                    <label for="instructor">Instructor</label>
+                    <input type="text" id="instructor" placeholder="Enter instructor's name">
+                </div>
+                
+                <div class="form-group">
+                    <label for="inspection-date">Inspection Date</label>
+                    <input type="date" id="inspection-date">
+                </div>
+                
+                <div class="form-group">
+                    <label for="vehicle-make">Vehicle Make</label>
+                    <input type="text" id="vehicle-make" placeholder="Enter vehicle make">
+                </div>
+                
+                <div class="form-group">
+                    <label for="vehicle-model">Vehicle Model</label>
+                    <input type="text" id="vehicle-model" placeholder="Enter vehicle model">
+                </div>
+                
+                <div class="form-group">
+                    <label for="vehicle-year">Vehicle Year</label>
+                    <input type="number" id="vehicle-year" placeholder="Enter vehicle year">
+                </div>
+                
+                <div class="form-group">
+                    <label for="vehicle-class">Vehicle Class</label>
+                    <select id="vehicle-class">
+                        <option value="">Select a class</option>
+                        <option value="Formula Student">Formula Student</option>
+                        <option value="GT">GT</option>
+                        <option value="Prototype">Prototype</option>
+                        <option value="Touring Car">Touring Car</option>
+                        <option value="Rally">Rally</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="vehicle-number">Vehicle Number</label>
+                    <input type="text" id="vehicle-number" placeholder="Enter vehicle number">
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="btn btn-success" id="save-setup">Save Information</button>
+                    <button class="btn" id="next-to-pre-race">Continue to Pre-Race Inspection</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Pre-Race Tab -->
+        <div id="pre-race" class="tab-content">
+            <h2 class="section-title">Pre-Race Inspection</h2>
+            
+            <div class="progress-container">
+                <p>Inspection Progress: <span id="pre-race-progress">0%</span></p>
+                <div class="progress-bar">
+                    <div class="progress-value" id="pre-race-progress-bar" style="width: 0%"></div>
+                </div>
+            </div>
+            
+            <div id="pre-race-checklist">
+                <!-- Safety Equipment -->
+                <div class="checklist-item" data-category="pre-race" data-section="safety-equipment">
+                    <div class="checklist-header">
+                        <div class="checklist-title">Safety Equipment</div>
+                        <div class="checklist-status status-pending">Pending</div>
                     </div>
-                    <div class="p-4">
-                        <video 
-                            id="cameraVideo" 
-                            class="w-full h-64 bg-black object-cover mb-4 rounded" 
-                            autoplay 
-                            playsinline
-                        ></video>
-                        <div class="flex justify-between">
-                            <button 
-                                id="cancelPhotoBtn" 
-                                class="px-4 py-2 bg-gray-500 text-white rounded-md flex items-center"
-                                onclick="stopCamera()"
-                            >
-                                <svg xmlns="http://www.w3.org/2000/svg" class="icon mr-1" viewBox="0 0 24 24">
-                                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                                </svg>
-                                Cancel
-                            </button>
-                            <button 
-                                id="capturePhotoBtn" 
-                                class="px-4 py-2 bg-blue-600 text-white rounded-md flex items-center"
-                                onclick="capturePhoto()"
-                            >
-                                <svg xmlns="http://www.w3.org/2000/svg" class="icon mr-1" viewBox="0 0 24 24">
-                                    <rect x="2" y="6" width="20" height="12" rx="2"></rect>
-                                    <circle cx="12" cy="12" r="3"></circle>
-                                    <path d="M7 2h10"></path>
-                                </svg>
-                                Capture
-                            </button>
+                    <div class="checklist-content">
+                        <div class="guidance-text">
+                            <p>Check all safety equipment for proper installation, condition, and compliance with regulations. This includes driver's safety harness, fire extinguisher, and emergency cut-off switches.</p>
                         </div>
+                        
+                        <div class="form-group">
+                            <label>Status</label>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" name="safety-equipment-status" id="safety-equipment-pass" value="pass">
+                                    <label for="safety-equipment-pass">Pass</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="safety-equipment-status" id="safety-equipment-fail" value="fail">
+                                    <label for="safety-equipment-fail">Fail</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="safety-equipment-status" id="safety-equipment-warning" value="warning">
+                                    <label for="safety-equipment-warning">Warning</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="safety-equipment-notes">Notes</label>
+                            <textarea id="safety-equipment-notes" rows="3" placeholder="Enter detailed notes about safety equipment inspection"></textarea>
+                        </div>
+                        
+                        <div class="photo-container">
+                            <label>Photo Evidence</label>
+                            <div class="photo-preview" id="safety-equipment-photo-preview">
+                                <i class="fas fa-camera"></i>
+                            </div>
+                            <button class="btn" id="safety-equipment-photo-btn">
+                                <i class="fas fa-camera"></i> Take Photo
+                            </button>
+                            <input type="file" id="safety-equipment-photo-input" accept="image/*" capture="environment" style="display: none">
+                        </div>
+                        
+                        <button class="btn btn-success" data-save="safety-equipment">Save Section</button>
+                    </div>
+                </div>
+                
+                <!-- Engine -->
+                <div class="checklist-item" data-category="pre-race" data-section="engine">
+                    <div class="checklist-header">
+                        <div class="checklist-title">Engine & Powertrain</div>
+                        <div class="checklist-status status-pending">Pending</div>
+                    </div>
+                    <div class="checklist-content">
+                        <div class="guidance-text">
+                            <p>Inspect the engine and powertrain for leaks, secure mounting, proper fluid levels, and functionality. Check all hoses, belts, and connections for wear or damage.</p>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Status</label>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" name="engine-status" id="engine-pass" value="pass">
+                                    <label for="engine-pass">Pass</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="engine-status" id="engine-fail" value="fail">
+                                    <label for="engine-fail">Fail</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="engine-status" id="engine-warning" value="warning">
+                                    <label for="engine-warning">Warning</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="engine-notes">Notes</label>
+                            <textarea id="engine-notes" rows="3" placeholder="Enter detailed notes about engine inspection"></textarea>
+                        </div>
+                        
+                        <div class="photo-container">
+                            <label>Photo Evidence</label>
+                            <div class="photo-preview" id="engine-photo-preview">
+                                <i class="fas fa-camera"></i>
+                            </div>
+                            <button class="btn" id="engine-photo-btn">
+                                <i class="fas fa-camera"></i> Take Photo
+                            </button>
+                            <input type="file" id="engine-photo-input" accept="image/*" capture="environment" style="display: none">
+                        </div>
+                        
+                        <button class="btn btn-success" data-save="engine">Save Section</button>
+                    </div>
+                </div>
+                
+                <!-- Suspension & Steering -->
+                <div class="checklist-item" data-category="pre-race" data-section="suspension">
+                    <div class="checklist-header">
+                        <div class="checklist-title">Suspension & Steering</div>
+                        <div class="checklist-status status-pending">Pending</div>
+                    </div>
+                    <div class="checklist-content">
+                        <div class="guidance-text">
+                            <p>Check suspension components for proper installation, damage, and adjustment. Inspect steering mechanisms for play, binding, or damage. Verify all fasteners are secure and properly torqued.</p>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Status</label>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" name="suspension-status" id="suspension-pass" value="pass">
+                                    <label for="suspension-pass">Pass</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="suspension-status" id="suspension-fail" value="fail">
+                                    <label for="suspension-fail">Fail</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="suspension-status" id="suspension-warning" value="warning">
+                                    <label for="suspension-warning">Warning</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="suspension-notes">Notes</label>
+                            <textarea id="suspension-notes" rows="3" placeholder="Enter detailed notes about suspension and steering inspection"></textarea>
+                        </div>
+                        
+                        <div class="photo-container">
+                            <label>Photo Evidence</label>
+                            <div class="photo-preview" id="suspension-photo-preview">
+                                <i class="fas fa-camera"></i>
+                            </div>
+                            <button class="btn" id="suspension-photo-btn">
+                                <i class="fas fa-camera"></i> Take Photo
+                            </button>
+                            <input type="file" id="suspension-photo-input" accept="image/*" capture="environment" style="display: none">
+                        </div>
+                        
+                        <button class="btn btn-success" data-save="suspension">Save Section</button>
+                    </div>
+                </div>
+                
+                <!-- Brakes -->
+                <div class="checklist-item" data-category="pre-race" data-section="brakes">
+                    <div class="checklist-header">
+                        <div class="checklist-title">Braking System</div>
+                        <div class="checklist-status status-pending">Pending</div>
+                    </div>
+                    <div class="checklist-content">
+                        <div class="guidance-text">
+                            <p>Inspect brake lines, calipers, rotors/discs, and pads for wear, damage, or leaks. Check brake fluid level and condition. Verify proper pedal feel and performance.</p>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Status</label>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" name="brakes-status" id="brakes-pass" value="pass">
+                                    <label for="brakes-pass">Pass</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="brakes-status" id="brakes-fail" value="fail">
+                                    <label for="brakes-fail">Fail</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="brakes-status" id="brakes-warning" value="warning">
+                                    <label for="brakes-warning">Warning</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="brakes-notes">Notes</label>
+                            <textarea id="brakes-notes" rows="3" placeholder="Enter detailed notes about braking system inspection"></textarea>
+                        </div>
+                        
+                        <div class="photo-container">
+                            <label>Photo Evidence</label>
+                            <div class="photo-preview" id="brakes-photo-preview">
+                                <i class="fas fa-camera"></i>
+                            </div>
+                            <button class="btn" id="brakes-photo-btn">
+                                <i class="fas fa-camera"></i> Take Photo
+                            </button>
+                            <input type="file" id="brakes-photo-input" accept="image/*" capture="environment" style="display: none">
+                        </div>
+                        
+                        <button class="btn btn-success" data-save="brakes">Save Section</button>
+                    </div>
+                </div>
+                
+                <!-- Tyres & Wheels -->
+                <div class="checklist-item" data-category="pre-race" data-section="tyres">
+                    <div class="checklist-header">
+                        <div class="checklist-title">Tyres & Wheels</div>
+                        <div class="checklist-status status-pending">Pending</div>
+                    </div>
+                    <div class="checklist-content">
+                        <div class="guidance-text">
+                            <p>Check tyres for proper inflation, condition, and wear. Inspect wheels for damage, proper mounting, and secure fasteners. Verify proper torque on all wheel nuts.</p>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Status</label>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" name="tyres-status" id="tyres-pass" value="pass">
+                                    <label for="tyres-pass">Pass</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="tyres-status" id="tyres-fail" value="fail">
+                                    <label for="tyres-fail">Fail</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="tyres-status" id="tyres-warning" value="warning">
+                                    <label for="tyres-warning">Warning</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="tyres-notes">Notes</label>
+                            <textarea id="tyres-notes" rows="3" placeholder="Enter detailed notes about tyres and wheels inspection"></textarea>
+                        </div>
+                        
+                        <div class="photo-container">
+                            <label>Photo Evidence</label>
+                            <div class="photo-preview" id="tyres-photo-preview">
+                                <i class="fas fa-camera"></i>
+                            </div>
+                            <button class="btn" id="tyres-photo-btn">
+                                <i class="fas fa-camera"></i> Take Photo
+                            </button>
+                            <input type="file" id="tyres-photo-input" accept="image/*" capture="environment" style="display: none">
+                        </div>
+                        
+                        <button class="btn btn-success" data-save="tyres">Save Section</button>
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="btn" id="back-to-setup">Back</button>
+                    <button class="btn btn-secondary" id="download-pre-race-report">
+                        <i class="fas fa-download"></i> Download Phase Report
+                    </button>
+                    <button class="btn btn-success" id="next-to-during-race">Continue to During-Race Inspection</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- During Race Tab -->
+        <div id="during-race" class="tab-content">
+            <h2 class="section-title">During-Race Inspection</h2>
+            
+            <div class="progress-container">
+                <p>Inspection Progress: <span id="during-race-progress">0%</span></p>
+                <div class="progress-bar">
+                    <div class="progress-value" id="during-race-progress-bar" style="width: 0%"></div>
+                </div>
+            </div>
+            
+            <div id="during-race-checklist">
+                <!-- Pit Stop Safety -->
+                <div class="checklist-item" data-category="during-race" data-section="pit-safety">
+                    <div class="checklist-header">
+                        <div class="checklist-title">Pit Stop Safety</div>
+                        <div class="checklist-status status-pending">Pending</div>
+                    </div>
+                    <div class="checklist-content">
+                        <div class="guidance-text">
+                            <p>Verify all pit stop procedures are followed correctly and safely. Check that all team members are wearing appropriate safety gear and following safety protocols.</p>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Status</label>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" name="pit-safety-status" id="pit-safety-pass" value="pass">
+                                    <label for="pit-safety-pass">Pass</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="pit-safety-status" id="pit-safety-fail" value="fail">
+                                    <label for="pit-safety-fail">Fail</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="pit-safety-status" id="pit-safety-warning" value="warning">
+                                    <label for="pit-safety-warning">Warning</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="pit-safety-notes">Notes</label>
+                            <textarea id="pit-safety-notes" rows="3" placeholder="Enter detailed notes about pit stop safety inspection"></textarea>
+                        </div>
+                        
+                        <div class="photo-container">
+                            <label>Photo Evidence</label>
+                            <div class="photo-preview" id="pit-safety-photo-preview">
+                                <i class="fas fa-camera"></i>
+                            </div>
+                            <button class="btn" id="pit-safety-photo-btn">
+                                <i class="fas fa-camera"></i> Take Photo
+                            </button>
+                            <input type="file" id="pit-safety-photo-input" accept="image/*" capture="environment" style="display: none">
+                        </div>
+                        
+                        <button class="btn btn-success" data-save="pit-safety">Save Section</button>
+                    </div>
+                </div>
+                
+                <!-- Tyre Condition -->
+                <div class="checklist-item" data-category="during-race" data-section="tyre-condition">
+                    <div class="checklist-header">
+                        <div class="checklist-title">Tyre Condition & Pressure</div>
+                        <div class="checklist-status status-pending">Pending</div>
+                    </div>
+                    <div class="checklist-content">
+                        <div class="guidance-text">
+                            <p>Assess tyre wear, temperature, and pressure during pit stops. Look for uneven wear patterns, blistering, or damage. Record pressures and temperatures if applicable.</p>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Status</label>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" name="tyre-condition-status" id="tyre-condition-pass" value="pass">
+                                    <label for="tyre-condition-pass">Pass</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="tyre-condition-status" id="tyre-condition-fail" value="fail">
+                                    <label for="tyre-condition-fail">Fail</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="tyre-condition-status" id="tyre-condition-warning" value="warning">
+                                    <label for="tyre-condition-warning">Warning</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="tyre-condition-notes">Notes</label>
+                            <textarea id="tyre-condition-notes" rows="3" placeholder="Enter detailed notes about tyre condition inspection"></textarea>
+                        </div>
+                        
+                        <div class="photo-container">
+                            <label>Photo Evidence</label>
+                            <div class="photo-preview" id="tyre-condition-photo-preview">
+                                <i class="fas fa-camera"></i>
+                            </div>
+                            <button class="btn" id="tyre-condition-photo-btn">
+                                <i class="fas fa-camera"></i> Take Photo
+                            </button>
+                            <input type="file" id="tyre-condition-photo-input" accept="image/*" capture="environment" style="display: none">
+                        </div>
+                        
+                        <button class="btn btn-success" data-save="tyre-condition">Save Section</button>
+                    </div>
+                </div>
+                
+                <!-- Brake Performance -->
+                <div class="checklist-item" data-category="during-race" data-section="brake-performance">
+                    <div class="checklist-header">
+                        <div class="checklist-title">Brake Performance</div>
+                        <div class="checklist-status status-pending">Pending</div>
+                    </div>
+                    <div class="checklist-content">
+                        <div class="guidance-text">
+                            <p>Check brake disc/rotor temperature and pad wear during pit stops. Look for excessive wear, overheating, or any signs of brake fade reported by the driver.</p>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Status</label>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" name="brake-performance-status" id="brake-performance-pass" value="pass">
+                                    <label for="brake-performance-pass">Pass</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="brake-performance-status" id="brake-performance-fail" value="fail">
+                                    <label for="brake-performance-fail">Fail</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="brake-performance-status" id="brake-performance-warning" value="warning">
+                                    <label for="brake-performance-warning">Warning</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="brake-performance-notes">Notes</label>
+                            <textarea id="brake-performance-notes" rows="3" placeholder="Enter detailed notes about brake performance inspection"></textarea>
+                        </div>
+                        
+                        <div class="photo-container">
+                            <label>Photo Evidence</label>
+                            <div class="photo-preview" id="brake-performance-photo-preview">
+                                <i class="fas fa-camera"></i>
+                            </div>
+                            <button class="btn" id="brake-performance-photo-btn">
+                                <i class="fas fa-camera"></i> Take Photo
+                            </button>
+                            <input type="file" id="brake-performance-photo-input" accept="image/*" capture="environment" style="display: none">
+                        </div>
+                        
+                        <button class="btn btn-success" data-save="brake-performance">Save Section</button>
+                    </div>
+                </div>
+                
+                <!-- Fluid Levels -->
+                <div class="checklist-item" data-category="during-race" data-section="fluid-levels">
+                    <div class="checklist-header">
+                        <div class="checklist-title">Fluid Levels & Leaks</div>
+                        <div class="checklist-status status-pending">Pending</div>
+                    </div>
+                    <div class="checklist-content">
+                        <div class="guidance-text">
+                            <p>Check for fluid leaks and verify proper fluid levels during pit stops. This includes engine oil, coolant, brake fluid, and transmission fluid if applicable.</p>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Status</label>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" name="fluid-levels-status" id="fluid-levels-pass" value="pass">
+                                    <label for="fluid-levels-pass">Pass</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="fluid-levels-status" id="fluid-levels-fail" value="fail">
+                                    <label for="fluid-levels-fail">Fail</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="fluid-levels-status" id="fluid-levels-warning" value="warning">
+                                    <label for="fluid-levels-warning">Warning</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="fluid-levels-notes">Notes</label>
+                            <textarea id="fluid-levels-notes" rows="3" placeholder="Enter detailed notes about fluid levels inspection"></textarea>
+                        </div>
+                        
+                        <div class="photo-container">
+                            <label>Photo Evidence</label>
+                            <div class="photo-preview" id="fluid-levels-photo-preview">
+                                <i class="fas fa-camera"></i>
+                            </div>
+                            <button class="btn" id="fluid-levels-photo-btn">
+                                <i class="fas fa-camera"></i> Take Photo
+                            </button>
+                            <input type="file" id="fluid-levels-photo-input" accept="image/*" capture="environment" style="display: none">
+                        </div>
+                        
+                        <button class="btn btn-success" data-save="fluid-levels">Save Section</button>
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="btn" id="back-to-pre-race">Back</button>
+                    <button class="btn btn-secondary" id="download-during-race-report">
+                        <i class="fas fa-download"></i> Download Phase Report
+                    </button>
+                    <button class="btn btn-success" id="next-to-post-race">Continue to Post-Race Inspection</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Post-Race Tab -->
+        <div id="post-race" class="tab-content">
+            <h2 class="section-title">Post-Race Inspection</h2>
+            
+            <div class="progress-container">
+                <p>Inspection Progress: <span id="post-race-progress">0%</span></p>
+                <div class="progress-bar">
+                    <div class="progress-value" id="post-race-progress-bar" style="width: 0%"></div>
+                </div>
+            </div>
+            
+            <div id="post-race-checklist">
+                <!-- Overall Condition -->
+                <div class="checklist-item" data-category="post-race" data-section="overall-condition">
+                    <div class="checklist-header">
+                        <div class="checklist-title">Overall Vehicle Condition</div>
+                        <div class="checklist-status status-pending">Pending</div>
+                    </div>
+                    <div class="checklist-content">
+                        <div class="guidance-text">
+                            <p>Perform a complete assessment of the vehicle's condition after the race. Note any damage, excessive wear, or failures that occurred during the race.</p>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Status</label>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" name="overall-condition-status" id="overall-condition-pass" value="pass">
+                                    <label for="overall-condition-pass">Pass</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="overall-condition-status" id="overall-condition-fail" value="fail">
+                                    <label for="overall-condition-fail">Fail</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="overall-condition-status" id="overall-condition-warning" value="warning">
+                                    <label for="overall-condition-warning">Warning</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="overall-condition-notes">Notes</label>
+                            <textarea id="overall-condition-notes" rows="3" placeholder="Enter detailed notes about overall vehicle condition inspection"></textarea>
+                        </div>
+                        
+                        <div class="photo-container">
+                            <label>Photo Evidence</label>
+                            <div class="photo-preview" id="overall-condition-photo-preview">
+                                <i class="fas fa-camera"></i>
+                            </div>
+                            <button class="btn" id="overall-condition-photo-btn">
+                                <i class="fas fa-camera"></i> Take Photo
+                            </button>
+                            <input type="file" id="overall-condition-photo-input" accept="image/*" capture="environment" style="display: none">
+                        </div>
+                        
+                        <button class="btn btn-success" data-save="overall-condition">Save Section</button>
+                    </div>
+                </div>
+                
+                <!-- Tyre Wear Analysis -->
+                <div class="checklist-item" data-category="post-race" data-section="tyre-wear">
+                    <div class="checklist-header">
+                        <div class="checklist-title">Tyre Wear Analysis</div>
+                        <div class="checklist-status status-pending">Pending</div>
+                    </div>
+                    <div class="checklist-content">
+                        <div class="guidance-text">
+                            <p>Analyze tyre wear patterns and overall tyre condition after the race. Document wear measurements, temperature ranges during operation, and any abnormal wear patterns.</p>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Status</label>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" name="tyre-wear-status" id="tyre-wear-pass" value="pass">
+                                    <label for="tyre-wear-pass">Pass</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="tyre-wear-status" id="tyre-wear-fail" value="fail">
+                                    <label for="tyre-wear-fail">Fail</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="tyre-wear-status" id="tyre-wear-warning" value="warning">
+                                    <label for="tyre-wear-warning">Warning</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="tyre-wear-notes">Notes</label>
+                            <textarea id="tyre-wear-notes" rows="3" placeholder="Enter detailed notes about tyre wear analysis"></textarea>
+                        </div>
+                        
+                        <div class="photo-container">
+                            <label>Photo Evidence</label>
+                            <div class="photo-preview" id="tyre-wear-photo-preview">
+                                <i class="fas fa-camera"></i>
+                            </div>
+                            <button class="btn" id="tyre-wear-photo-btn">
+                                <i class="fas fa-camera"></i> Take Photo
+                            </button>
+                            <input type="file" id="tyre-wear-photo-input" accept="image/*" capture="environment" style="display: none">
+                        </div>
+                        
+                        <button class="btn btn-success" data-save="tyre-wear">Save Section</button>
+                    </div>
+                </div>
+                
+                <!-- Brake System Analysis -->
+                <div class="checklist-item" data-category="post-race" data-section="brake-analysis">
+                    <div class="checklist-header">
+                        <div class="checklist-title">Brake System Analysis</div>
+                        <div class="checklist-status status-pending">Pending</div>
+                    </div>
+                    <div class="checklist-content">
+                        <div class="guidance-text">
+                            <p>Evaluate brake pad and disc wear after the race. Document measurements, temperature ranges during operation, and any signs of overheating or failure.</p>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Status</label>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" name="brake-analysis-status" id="brake-analysis-pass" value="pass">
+                                    <label for="brake-analysis-pass">Pass</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="brake-analysis-status" id="brake-analysis-fail" value="fail">
+                                    <label for="brake-analysis-fail">Fail</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="brake-analysis-status" id="brake-analysis-warning" value="warning">
+                                    <label for="brake-analysis-warning">Warning</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="brake-analysis-notes">Notes</label>
+                            <textarea id="brake-analysis-notes" rows="3" placeholder="Enter detailed notes about brake system analysis"></textarea>
+                        </div>
+                        
+                        <div class="photo-container">
+                            <label>Photo Evidence</label>
+                            <div class="photo-preview" id="brake-analysis-photo-preview">
+                                <i class="fas fa-camera"></i>
+                            </div>
+                            <button class="btn" id="brake-analysis-photo-btn">
+                                <i class="fas fa-camera"></i> Take Photo
+                            </button>
+                            <input type="file" id="brake-analysis-photo-input" accept="image/*" capture="environment" style="display: none">
+                        </div>
+                        
+                        <button class="btn btn-success" data-save="brake-analysis">Save Section</button>
+                    </div>
+                </div>
+                
+                <!-- Drivetrain Inspection -->
+                <div class="checklist-item" data-category="post-race" data-section="drivetrain">
+                    <div class="checklist-header">
+                        <div class="checklist-title">Drivetrain Inspection</div>
+                        <div class="checklist-status status-pending">Pending</div>
+                    </div>
+                    <div class="checklist-content">
+                        <div class="guidance-text">
+                            <p>Inspect the drivetrain components for wear, damage, or failures. This includes transmission, differential, axles, and CV joints if applicable.</p>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Status</label>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" name="drivetrain-status" id="drivetrain-pass" value="pass">
+                                    <label for="drivetrain-pass">Pass</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="drivetrain-status" id="drivetrain-fail" value="fail">
+                                    <label for="drivetrain-fail">Fail</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="drivetrain-status" id="drivetrain-warning" value="warning">
+                                    <label for="drivetrain-warning">Warning</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="drivetrain-notes">Notes</label>
+                            <textarea id="drivetrain-notes" rows="3" placeholder="Enter detailed notes about drivetrain inspection"></textarea>
+                        </div>
+                        
+                        <div class="photo-container">
+                            <label>Photo Evidence</label>
+                            <div class="photo-preview" id="drivetrain-photo-preview">
+                                <i class="fas fa-camera"></i>
+                            </div>
+                            <button class="btn" id="drivetrain-photo-btn">
+                                <i class="fas fa-camera"></i> Take Photo
+                            </button>
+                            <input type="file" id="drivetrain-photo-input" accept="image/*" capture="environment" style="display: none">
+                        </div>
+                        
+                        <button class="btn btn-success" data-save="drivetrain">Save Section</button>
+                    </div>
+                </div>
+                
+                <!-- Engine Performance -->
+                <div class="checklist-item" data-category="post-race" data-section="engine-performance">
+                    <div class="checklist-header">
+                        <div class="checklist-title">Engine Performance Evaluation</div>
+                        <div class="checklist-status status-pending">Pending</div>
+                    </div>
+                    <div class="checklist-content">
+                        <div class="guidance-text">
+                            <p>Evaluate engine performance data and physical condition after the race. Check for any unusual noises, vibrations, or performance issues noted during the race.</p>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Status</label>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" name="engine-performance-status" id="engine-performance-pass" value="pass">
+                                    <label for="engine-performance-pass">Pass</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="engine-performance-status" id="engine-performance-fail" value="fail">
+                                    <label for="engine-performance-fail">Fail</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="engine-performance-status" id="engine-performance-warning" value="warning">
+                                    <label for="engine-performance-warning">Warning</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="engine-performance-notes">Notes</label>
+                            <textarea id="engine-performance-notes" rows="3" placeholder="Enter detailed notes about engine performance evaluation"></textarea>
+                        </div>
+                        
+                        <div class="photo-container">
+                            <label>Photo Evidence</label>
+                            <div class="photo-preview" id="engine-performance-photo-preview">
+                                <i class="fas fa-camera"></i>
+                            </div>
+                            <button class="btn" id="engine-performance-photo-btn">
+                                <i class="fas fa-camera"></i> Take Photo
+                            </button>
+                            <input type="file" id="engine-performance-photo-input" accept="image/*" capture="environment" style="display: none">
+                        </div>
+                        
+                        <button class="btn btn-success" data-save="engine-performance">Save Section</button>
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="btn" id="back-to-during-race">Back</button>
+                    <button class="btn btn-secondary" id="download-post-race-report">
+                        <i class="fas fa-download"></i> Download Phase Report
+                    </button>
+                    <button class="btn btn-success" id="next-to-report">Generate Report</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Report Tab -->
+        <div id="report" class="tab-content">
+            <h2 class="section-title">Inspection Report</h2>
+            
+            <div class="summary-section">
+                <h3>Report Summary</h3>
+                <div id="report-summary">
+                    <div class="summary-item">
+                        <span>Student Name:</span>
+                        <span id="summary-student-name">-</span>
+                    </div>
+                    <div class="summary-item">
+                        <span>Vehicle:</span>
+                        <span id="summary-vehicle">-</span>
+                    </div>
+                    <div class="summary-item">
+                        <span>Date:</span>
+                        <span id="summary-date">-</span>
+                    </div>
+                    <div class="summary-item">
+                        <span>Overall Status:</span>
+                        <span id="summary-status">-</span>
                     </div>
                 </div>
             </div>
-
-            <!-- Action buttons -->
-            <div class="flex flex-wrap justify-between gap-4 mb-8 mt-6">
-                <button 
-                    id="resetBtn"
-                    class="px-4 py-2 bg-red-600 text-white rounded-md flex items-center"
-                >
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon mr-1" viewBox="0 0 24 24">
-                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
-                    Reset Form
-                </button>
-                <button 
-                    id="downloadBtn"
-                    class="px-4 py-2 bg-green-600 text-white rounded-md flex items-center"
-                >
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon mr-1" viewBox="0 0 24 24">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                        <polyline points="7 10 12 15 17 10"></polyline>
-                        <line x1="12" y1="15" x2="12" y2="3"></line>
-                    </svg>
-                    Download Report
+            
+            <div class="summary-section">
+                <h3>Completion Status</h3>
+                <div class="summary-item">
+                    <span>Pre-Race Inspection:</span>
+                    <span id="summary-pre-race">0%</span>
+                </div>
+                <div class="summary-item">
+                    <span>During-Race Inspection:</span>
+                    <span id="summary-during-race">0%</span>
+                </div>
+                <div class="summary-item">
+                    <span>Post-Race Inspection:</span>
+                    <span id="summary-post-race">0%</span>
+                </div>
+                <div class="summary-item">
+                    <span>Overall Completion:</span>
+                    <span id="summary-overall">0%</span>
+                </div>
+            </div>
+            
+            <div class="summary-section">
+                <h3>Key Findings</h3>
+                <div id="key-findings">
+                    <p>Complete all inspection phases to generate key findings.</p>
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="btn" id="back-to-post-race">Back</button>
+                <button class="btn btn-success" id="preview-report">Preview Full Report</button>
+                <button class="btn btn-secondary" id="download-report">
+                    <i class="fas fa-download"></i> Download PDF
                 </button>
             </div>
-        </main>
-
-        <!-- Footer -->
-        <footer class="bg-gray-800 text-white text-center p-4 text-sm">
-            <p>Data is saved locally on your device. Your work will be automatically saved.</p>
-        </footer>
+        </div>
     </div>
-
+    
+    <!-- Toast notifications -->
+    <div class="toast-container" id="toast-container"></div>
+    
+    <!-- Report Preview Modal -->
+    <div class="modal" id="report-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Full Inspection Report</div>
+                <button class="modal-close" id="close-report-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="report-preview" class="report-container"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" id="close-preview">Close</button>
+                <button class="btn btn-secondary" id="download-report-modal">
+                    <i class="fas fa-download"></i> Download PDF
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>Motorsport Race Inspection Checklist App &copy; 2025</p>
+    </footer>
+    
     <script>
-        // Global variables
-        let checklist = [];
-        let studentInfo = {
-            name: '',
-            studentId: '',
-            date: new Date().toISOString().split('T')[0],
-            vehicleId: '',
-            raceEvent: '',
-            carClass: '',
-            teamName: '',
-            scrutineerName: '',
-            inspectionType: 'post-race'
+        // Store all app data
+        const appData = {
+            setup: {
+                studentName: '',
+                studentId: '',
+                course: '',
+                instructor: '',
+                inspectionDate: '',
+                vehicleMake: '',
+                vehicleModel: '',
+                vehicleYear: '',
+                vehicleClass: '',
+                vehicleNumber: ''
+            },
+            preRace: {},
+            duringRace: {},
+            postRace: {}
         };
         
-        // Camera variables
-        let mediaStream = null;
-        let activeCamera = null; // { sectionId, taskId }
-
-        // DOM elements
-        const checklistContainer = document.getElementById('checklistContainer');
-        const progressBar = document.getElementById('progressBar');
-        const progressText = document.getElementById('progressText');
-        const headerTitle = document.getElementById('headerTitle');
-        const cameraModal = document.getElementById('cameraModal');
-        const cameraVideo = document.getElementById('cameraVideo');
-        const capturePhotoBtn = document.getElementById('capturePhotoBtn');
-        const cancelPhotoBtn = document.getElementById('cancelPhotoBtn');
-        const resetBtn = document.getElementById('resetBtn');
-        const downloadBtn = document.getElementById('downloadBtn');
-        const inspectionTypeSelect = document.getElementById('inspectionType');
-
-        // Initialize form fields
-        document.getElementById('inspectionDate').value = studentInfo.date;
-
-        // Generate checklist based on inspection type
-        function generateChecklist(inspectionType) {
-            // Common safety equipment checklist for all inspection types
-            const safetyEquipment = {
-                id: 1, 
-                title: 'Driver Safety Equipment', 
-                tasks: [
-                    { id: 'task1-1', text: 'Helmet (FIA/Snell rating, damage check, visor condition)', completed: false, notes: '', photos: [] },
-                    { id: 'task1-2', text: 'HANS/FHR device (straps, tethers, mounting points)', completed: false, notes: '', photos: [] },
-                    { id: 'task1-3', text: 'Race suit & underwear (FIA rating, condition, fit)', completed: false, notes: '', photos: [] },
-                    { id: 'task1-4', text: 'Gloves & boots (material condition, stitching)', completed: false, notes: '', photos: [] },
-                    { id: 'task1-5', text: 'Harness/seatbelt (FIA date validation, mounting points, latch mechanism)', completed: false, notes: '', photos: [] }
-                ]
-            };
+        // Define sections for each inspection category
+        const inspectionSections = {
+            preRace: ['safety-equipment', 'engine', 'suspension', 'brakes', 'tyres'],
+            duringRace: ['pit-safety', 'tyre-condition', 'brake-performance', 'fluid-levels'],
+            postRace: ['overall-condition', 'tyre-wear', 'brake-analysis', 'drivetrain', 'engine-performance']
+        };
+        
+        // Map category IDs to appData keys
+        const categoryMap = {
+            'pre-race': 'preRace',
+            'during-race': 'duringRace',
+            'post-race': 'postRace'
+        };
+        
+        // DOM loaded event
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load saved data from localStorage if available
+            loadSavedData();
             
-            const vehicleSafetySystems = {
-                id: 2, 
-                title: 'Vehicle Safety Systems', 
-                tasks: [
-                    { id: 'task2-1', text: 'Fire extinguisher/suppression system (pressure, mounting, activation)', completed: false, notes: '', photos: [] },
-                    { id: 'task2-2', text: 'Roll cage/ROPS (mounting points, padding, deformation)', completed: false, notes: '', photos: [] },
-                    { id: 'task2-3', text: 'Driver\'s seat (FIA approval, mounting, rails, condition)', completed: false, notes: '', photos: [] },
-                    { id: 'task2-4', text: 'Window nets/arm restraints (condition, mounting, operation)', completed: false, notes: '', photos: [] },
-                    { id: 'task2-5', text: 'Kill switch/isolation (electrical & fuel, functionality, access)', completed: false, notes: '', photos: [] }
-                ]
-            };
-
-            // Pre-race specific inspections
-            if (inspectionType === 'pre-race') {
-                return [
-                    safetyEquipment,
-                    vehicleSafetySystems,
-                    {
-                        id: 3, 
-                        title: 'Technical Compliance', 
-                        tasks: [
-                            { id: 'task3-1', text: 'Homologation papers/technical passport (current, matching)', completed: false, notes: '', photos: [] },
-                            { id: 'task3-2', text: 'Scrutineering seals & markings (present, unbroken)', completed: false, notes: '', photos: [] },
-                            { id: 'task3-3', text: 'Restrictor/BoP compliance (size, sealing)', completed: false, notes: '', photos: [] },
-                            { id: 'task3-4', text: 'Vehicle weight (minimum weight compliance, ballast mounting)', completed: false, notes: '', photos: [] },
-                            { id: 'task3-5', text: 'Competition number & required decals (visibility, placement)', completed: false, notes: '', photos: [] }
-                        ]
-                    },
-                    {
-                        id: 4, 
-                        title: 'Wheels & Tires', 
-                        tasks: [
-                            { id: 'task4-1', text: 'Tire specification (correct compound, size, direction)', completed: false, notes: '', photos: [] },
-                            { id: 'task4-2', text: 'Tire condition (cuts, punctures, flat spots, blistering)', completed: false, notes: '', photos: [] },
-                            { id: 'task4-3', text: 'Tire pressures (cold measurements, setup)', completed: false, notes: '', photos: [] },
-                            { id: 'task4-4', text: 'Wheels (damage, cracks, valve stems, balance weights)', completed: false, notes: '', photos: [] },
-                            { id: 'task4-5', text: 'Wheel nuts/studs (torque, thread condition, locking method)', completed: false, notes: '', photos: [] }
-                        ]
-                    },
-                    {
-                        id: 5, 
-                        title: 'Braking System', 
-                        tasks: [
-                            { id: 'task5-1', text: 'Brake pads/discs (thickness, condition, bedding)', completed: false, notes: '', photos: [] },
-                            { id: 'task5-2', text: 'Brake lines & hoses (leaks, chafing, mounting)', completed: false, notes: '', photos: [] },
-                            { id: 'task5-3', text: 'Brake calipers (mounting, piston operation, pad retaining pins)', completed: false, notes: '', photos: [] },
-                            { id: 'task5-4', text: 'Brake fluid (level, condition, boiling point)', completed: false, notes: '', photos: [] },
-                            { id: 'task5-5', text: 'Brake balance adjustment (bias valve, proportioning)', completed: false, notes: '', photos: [] }
-                        ]
-                    },
-                    {
-                        id: 6, 
-                        title: 'Fuel System', 
-                        tasks: [
-                            { id: 'task6-1', text: 'Fuel level (sufficient for race duration plus contingency)', completed: false, notes: '', photos: [] },
-                            { id: 'task6-2', text: 'Fuel tank/cell (FIA certification, mounting, date validation)', completed: false, notes: '', photos: [] },
-                            { id: 'task6-3', text: 'Fuel lines & connections (high-pressure fittings, routing)', completed: false, notes: '', photos: [] },
-                            { id: 'task6-4', text: 'Fuel pump & filter (operation, mounting)', completed: false, notes: '', photos: [] },
-                            { id: 'task6-5', text: 'Fuel sample port (accessibility, functionality)', completed: false, notes: '', photos: [] }
-                        ]
-                    },
-                    {
-                        id: 7, 
-                        title: 'Electrical System', 
-                        tasks: [
-                            { id: 'task7-1', text: 'Battery (mounting, terminal protection, charging)', completed: false, notes: '', photos: [] },
-                            { id: 'task7-2', text: 'Lighting systems (headlights, brake lights, rain light)', completed: false, notes: '', photos: [] },
-                            { id: 'task7-3', text: 'Wiring harness (chafing, proper routing, connections)', completed: false, notes: '', photos: [] },
-                            { id: 'task7-4', text: 'ECU & data systems (mounting, programming, sealing)', completed: false, notes: '', photos: [] },
-                            { id: 'task7-5', text: 'Sensors & actuators (functionality, calibration)', completed: false, notes: '', photos: [] }
-                        ]
-                    },
-                    {
-                        id: 8, 
-                        title: 'Cockpit & Controls', 
-                        tasks: [
-                            { id: 'task8-1', text: 'Steering wheel (quick release, buttons, grips)', completed: false, notes: '', photos: [] },
-                            { id: 'task8-2', text: 'Pedals (operation, adjustment, mounting)', completed: false, notes: '', photos: [] },
-                            { id: 'task8-3', text: 'Dashboard/instruments (functionality, visibility)', completed: false, notes: '', photos: [] },
-                            { id: 'task8-4', text: 'Radio systems (communication test, mounting)', completed: false, notes: '', photos: [] },
-                            { id: 'task8-5', text: 'Driver comfort (seat position, pedal reach, visibility)', completed: false, notes: '', photos: [] }
-                        ]
-                    }
-                ];
-            }
+            // Set up tab navigation
+            setupTabNavigation();
             
-            // During-race specific inspections
-            else if (inspectionType === 'during-race') {
-                return [
-                    {
-                        id: 3,
-                        title: 'Pit Stop Inspection',
-                        tasks: [
-                            { id: 'task3-1', text: 'Tire change (wear pattern, pressure check, condition)', completed: false, notes: '', photos: [] },
-                            { id: 'task3-2', text: 'Brake temperature (pyrometer readings, pad wear)', completed: false, notes: '', photos: [] },
-                            { id: 'task3-3', text: 'Fuel level (consumption verification, refilling)', completed: false, notes: '', photos: [] },
-                            { id: 'task3-4', text: 'Body damage assessment (aero components, structural)', completed: false, notes: '', photos: [] },
-                            { id: 'task3-5', text: 'Fluids check (oil, coolant, brake fluid levels)', completed: false, notes: '', photos: [] }
-                        ]
-                    },
-                    {
-                        id: 4,
-                        title: 'Driver Change (if applicable)',
-                        tasks: [
-                            { id: 'task4-1', text: 'Driver condition (fatigue, hydration, physical status)', completed: false, notes: '', photos: [] },
-                            { id: 'task4-2', text: 'New driver equipment (helmet, HANS, suit, preparations)', completed: false, notes: '', photos: [] },
-                            { id: 'task4-3', text: 'Seat adjustment (position, belts, comfort)', completed: false, notes: '', photos: [] },
-                            { id: 'task4-4', text: 'Communications check (radio, signals, team comms)', completed: false, notes: '', photos: [] },
-                            { id: 'task4-5', text: 'Driver briefing (track conditions, strategy update)', completed: false, notes: '', photos: [] }
-                        ]
-                    },
-                    {
-                        id: 5,
-                        title: 'Vehicle Performance',
-                        tasks: [
-                            { id: 'task5-1', text: 'Data analysis (lap times, sector performance, consistency)', completed: false, notes: '', photos: [] },
-                            { id: 'task5-2', text: 'Tire performance (degradation rate, grip levels)', completed: false, notes: '', photos: [] },
-                            { id: 'task5-3', text: 'Fuel efficiency (consumption rate, strategy adjustment)', completed: false, notes: '', photos: [] },
-                            { id: 'task5-4', text: 'Brake performance (fade, temperature management)', completed: false, notes: '', photos: [] },
-                            { id: 'task5-5', text: 'Handling characteristics (balance, stability, driver feedback)', completed: false, notes: '', photos: [] }
-                        ]
-                    },
-                    {
-                        id: 6,
-                        title: 'Quick Technical Checks',
-                        tasks: [
-                            { id: 'task6-1', text: 'Wheel torque verification (safety retightening)', completed: false, notes: '', photos: [] },
-                            { id: 'task6-2', text: 'Lighting systems functionality (if race extends to dusk/night)', completed: false, notes: '', photos: [] },
-                            { id: 'task6-3', text: 'Safety systems check (fire extinguisher, kill switches)', completed: false, notes: '', photos: [] },
-                            { id: 'task6-4', text: 'Fluid leaks inspection (underneath car, components)', completed: false, notes: '', photos: [] },
-                            { id: 'task6-5', text: 'Suspension quick check (visible damage, alignment)', completed: false, notes: '', photos: [] }
-                        ]
-                    },
-                    {
-                        id: 7,
-                        title: 'Weather Response (if applicable)',
-                        tasks: [
-                            { id: 'task7-1', text: 'Tire selection (dry/wet/intermediate assessment)', completed: false, notes: '', photos: [] },
-                            { id: 'task7-2', text: 'Setup adjustments (anti-roll bars, wing angles)', completed: false, notes: '', photos: [] },
-                            { id: 'task7-3', text: 'Visibility systems (wipers, demisting, rain light)', completed: false, notes: '', photos: [] },
-                            { id: 'task7-4', text: 'Track condition notes (wet patches, racing line evolution)', completed: false, notes: '', photos: [] },
-                            { id: 'task7-5', text: 'Strategy revision (pit windows, fuel load, tire life)', completed: false, notes: '', photos: [] }
-                        ]
-                    }
-                ];
-            } 
+            // Set up checklist item toggling
+            setupChecklistToggle();
             
-            // Post-race specific inspections (default)
-            else {
-                return [
-                    safetyEquipment,
-                    vehicleSafetySystems,
-                    {
-                        id: 3, 
-                        title: 'Chassis & Exterior', 
-                        tasks: [
-                            { id: 'task3-1', text: 'Bodywork integrity (mounting points, damage, fasteners)', completed: false, notes: '', photos: [] },
-                            { id: 'task3-2', text: 'Aerodynamic components (wings, splitters, diffusers, damage)', completed: false, notes: '', photos: [] },
-                            { id: 'task3-3', text: 'Door/hood/trunk latches (security, functionality)', completed: false, notes: '', photos: [] },
-                            { id: 'task3-4', text: 'Competition number & required decals (visibility, placement)', completed: false, notes: '', photos: [] },
-                            { id: 'task3-5', text: 'Vehicle weight (minimum weight compliance, ballast mounting)', completed: false, notes: '', photos: [] }
-                        ]
-                    },
-                    {
-                        id: 4, 
-                        title: 'Suspension & Steering', 
-                        tasks: [
-                            { id: 'task4-1', text: 'Suspension components (cracks, bends, play in joints)', completed: false, notes: '', photos: [] },
-                            { id: 'task4-2', text: 'Shock absorbers/springs (leaks, mounting, travel)', completed: false, notes: '', photos: [] },
-                            { id: 'task4-3', text: 'Steering components (rack, arms, tie-rods, excessive play)', completed: false, notes: '', photos: [] },
-                            { id: 'task4-4', text: 'Wheel bearings (excessive play, noise, heat)', completed: false, notes: '', photos: [] },
-                            { id: 'task4-5', text: 'Ride height (minimum compliance, vehicle attitude)', completed: false, notes: '', photos: [] }
-                        ]
-                    },
-                    {
-                        id: 5, 
-                        title: 'Braking System', 
-                        tasks: [
-                            { id: 'task5-1', text: 'Brake pads/discs (thickness, wear pattern, cracks)', completed: false, notes: '', photos: [] },
-                            { id: 'task5-2', text: 'Brake lines & hoses (leaks, chafing, mounting)', completed: false, notes: '', photos: [] },
-                            { id: 'task5-3', text: 'Brake calipers (mounting, piston operation, pad retaining pins)', completed: false, notes: '', photos: [] },
-                            { id: 'task5-4', text: 'Brake fluid (level, condition, boiling point)', completed: false, notes: '', photos: [] },
-                            { id: 'task5-5', text: 'Brake balance adjustment (bias valve, proportioning)', completed: false, notes: '', photos: [] }
-                        ]
-                    },
-                    {
-                        id: 6, 
-                        title: 'Wheels & Tires', 
-                        tasks: [
-                            { id: 'task6-1', text: 'Wheels (damage, cracks, valve stems, balance weights)', completed: false, notes: '', photos: [] },
-                            { id: 'task6-2', text: 'Wheel nuts/studs (torque, thread condition, locking method)', completed: false, notes: '', photos: [] },
-                            { id: 'task6-3', text: 'Tire specification (correct compound, size, direction)', completed: false, notes: '', photos: [] },
-                            { id: 'task6-4', text: 'Tire condition (cuts, punctures, flat spots, blistering)', completed: false, notes: '', photos: [] },
-                            { id: 'task6-5', text: 'Tire pressures (hot/cold measurements, adjustments)', completed: false, notes: '', photos: [] }
-                        ]
-                    },
-                    {
-                        id: 7, 
-                        title: 'Drivetrain & Transmission', 
-                        tasks: [
-                            { id: 'task7-1', text: 'Clutch (operation, free play, fluid leaks)', completed: false, notes: '', photos: [] },
-                            { id: 'task7-2', text: 'Gearbox (operation, mounting, leaks)', completed: false, notes: '', photos: [] },
-                            { id: 'task7-3', text: 'Driveshaft/axles (CV boots, play, mounting)', completed: false, notes: '', photos: [] },
-                            { id: 'task7-4', text: 'Differential (mounting, operation, leaks)', completed: false, notes: '', photos: [] },
-                            { id: 'task7-5', text: 'Transmission & differential fluid (level, condition)', completed: false, notes: '', photos: [] }
-                        ]
-                    },
-                    {
-                        id: 8, 
-                        title: 'Engine & Cooling', 
-                        tasks: [
-                            { id: 'task8-1', text: 'Engine bay inspection (leaks, mounting, belt condition)', completed: false, notes: '', photos: [] },
-                            { id: 'task8-2', text: 'Oil level & condition (contamination, pressure)', completed: false, notes: '', photos: [] },
-                            { id: 'task8-3', text: 'Cooling system (radiator, hoses, cap, coolant level)', completed: false, notes: '', photos: [] },
-                            { id: 'task8-4', text: 'Air intake system (filter, ducting, airbox)', completed: false, notes: '', photos: [] },
-                            { id: 'task8-5', text: 'Exhaust system (mounting, leaks, silencer)', completed: false, notes: '', photos: [] }
-                        ]
-                    },
-                    {
-                        id: 9, 
-                        title: 'Fuel System', 
-                        tasks: [
-                            { id: 'task9-1', text: 'Fuel tank/cell (FIA certification, mounting, date validation)', completed: false, notes: '', photos: [] },
-                            { id: 'task9-2', text: 'Fuel lines & connections (high-pressure fittings, routing)', completed: false, notes: '', photos: [] },
-                            { id: 'task9-3', text: 'Fuel pump & filter (operation, mounting)', completed: false, notes: '', photos: [] },
-                            { id: 'task9-4', text: 'Fuel sample port (accessibility, functionality)', completed: false, notes: '', photos: [] },
-                            { id: 'task9-5', text: 'Fuel level & type (correct specification, contamination)', completed: false, notes: '', photos: [] }
-                        ]
-                    },
-                    {
-                        id: 10, 
-                        title: 'Electrical System', 
-                        tasks: [
-                            { id: 'task10-1', text: 'Battery (mounting, terminal protection, charging)', completed: false, notes: '', photos: [] },
-                            { id: 'task10-2', text: 'Wiring harness (chafing, proper routing, connections)', completed: false, notes: '', photos: [] },
-                            { id: 'task10-3', text: 'ECU & data systems (mounting, programming, sealing)', completed: false, notes: '', photos: [] },
-                            { id: 'task10-4', text: 'Lighting systems (headlights, brake lights, rain light)', completed: false, notes: '', photos: [] },
-                            { id: 'task10-5', text: 'Sensors & actuators (functionality, calibration)', completed: false, notes: '', photos: [] }
-                        ]
-                    },
-                    {
-                        id: 11, 
-                        title: 'Cockpit & Controls', 
-                        tasks: [
-                            { id: 'task11-1', text: 'Steering wheel (quick release, buttons, grips)', completed: false, notes: '', photos: [] },
-                            { id: 'task11-2', text: 'Pedals (operation, adjustment, mounting)', completed: false, notes: '', photos: [] },
-                            { id: 'task11-3', text: 'Dashboard/instruments (functionality, visibility)', completed: false, notes: '', photos: [] },
-                            { id: 'task11-4', text: 'Interior panels & trim (mounting, sharp edges)', completed: false, notes: '', photos: [] },
-                            { id: 'task11-5', text: 'Camera/timing systems (mounting, power supply)', completed: false, notes: '', photos: [] }
-                        ]
-                    },
-                    {
-                        id: 12, 
-                        title: 'Technical Compliance', 
-                        tasks: [
-                            { id: 'task12-1', text: 'Scrutineering seals & markings (present, unbroken)', completed: false, notes: '', photos: [] },
-                            { id: 'task12-2', text: 'Homologation papers/technical passport (current, matching)', completed: false, notes: '', photos: [] },
-                            { id: 'task12-3', text: 'Restrictor/BoP compliance (size, sealing)', completed: false, notes: '', photos: [] },
-                            { id: 'task12-4', text: 'Noise test compliance (db level, measurement)', completed: false, notes: '', photos: [] },
-                            { id: 'task12-5', text: 'Data logging retrieval (files, parameters)', completed: false, notes: '', photos: [] }
-                        ]
-                    }
-                ];
+            // Set up photo capture
+            setupPhotoCapture();
+            
+            // Set up save buttons
+            setupSaveButtons();
+            
+            // Set up navigation buttons
+            setupNavigationButtons();
+            
+            // Setup report generation
+            setupReportGeneration();
+            
+            // Update all progress indicators
+            updateAllProgress();
+            
+            // Update summary based on saved data
+            updateSummary();
+        });
+        
+        // Load saved data from localStorage
+        function loadSavedData() {
+            const savedData = localStorage.getItem('motorsportInspectionData');
+            if (savedData) {
+                const parsedData = JSON.parse(savedData);
+                
+                // Merge saved data with appData
+                Object.assign(appData, parsedData);
+                
+                // Fill form fields with saved data
+                fillFormFields();
+                
+                // Update statuses for checklist items
+                updateChecklistStatuses();
+                
+                // Show success toast
+                showToast('Data loaded successfully from previous session', 'success');
             }
         }
-
-        // Render the checklist UI
-        function renderChecklist() {
-            checklistContainer.innerHTML = '';
-            
-            checklist.forEach(section => {
-                // Create section container
-                const sectionElement = document.createElement('section');
-                sectionElement.className = 'bg-white rounded-lg shadow-md p-4 mb-6';
-                sectionElement.innerHTML = `
-                    <h2 class="text-lg font-bold mb-4 text-blue-800">${section.title}</h2>
-                `;
-                
-                // Add tasks to the section
-                section.tasks.forEach(task => {
-                    const taskElement = document.createElement('div');
-                    taskElement.className = `border border-gray-200 rounded-md p-4 mb-4 ${task.completed ? 'task-completed' : ''}`;
-                    taskElement.dataset.sectionId = section.id;
-                    taskElement.dataset.taskId = task.id;
-                    
-                    // Create task header with checkbox
-                    const taskHeader = document.createElement('div');
-                    taskHeader.className = 'flex items-start mb-2';
-                    taskHeader.innerHTML = `
-                        <div class="flex-shrink-0 mt-1 checkbox-container">
-                            ${task.completed ? 
-                                `<svg xmlns="http://www.w3.org/2000/svg" class="icon text-green-600" viewBox="0 0 24 24">
-                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                                </svg>` : 
-                                `<svg xmlns="http://www.w3.org/2000/svg" class="icon text-gray-400" viewBox="0 0 24 24">
-                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                                </svg>`
-                            }
-                        </div>
-                        <span class="ml-2 text-gray-800">${task.text}</span>
-                    `;
-                    
-                    // Add click event to checkbox
-                    const checkboxContainer = taskHeader.querySelector('.checkbox-container');
-                    checkboxContainer.addEventListener('click', () => {
-                        toggleTask(section.id, task.id);
-                    });
-                    
-                    taskElement.appendChild(taskHeader);
-                    
-                    // Create task content (notes + photos)
-                    const taskContent = document.createElement('div');
-                    taskContent.className = 'pl-7';
-                    
-                    // Notes input
-                    const notesContainer = document.createElement('div');
-                    notesContainer.className = 'mb-3';
-                    notesContainer.innerHTML = `
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Notes</label>
-                        <textarea
-                            rows="2"
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md task-notes"
-                            placeholder="Add notes here..."
-                        >${task.notes}</textarea>
-                    `;
-                    
-                    // Add change event to textarea
-                    const notesTextarea = notesContainer.querySelector('textarea');
-                    notesTextarea.addEventListener('input', (e) => {
-                        updateTaskNotes(section.id, task.id, e.target.value);
-                    });
-                    
-                    taskContent.appendChild(notesContainer);
-                    
-                    // Photos section
-                    const photosContainer = document.createElement('div');
-                    photosContainer.className = 'mb-3';
-                    photosContainer.innerHTML = `
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Photos</label>
-                        <div class="photo-thumbnails flex flex-wrap mb-2"></div>
-                        <div class="flex gap-2">
-                            <button class="take-photo-btn px-3 py-1 text-sm bg-blue-600 text-white rounded-md flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="icon mr-1" viewBox="0 0 24 24">
-                                    <rect x="2" y="6" width="20" height="12" rx="2"></rect>
-                                    <circle cx="12" cy="12" r="3"></circle>
-                                    <path d="M7 2h10"></path>
-                                </svg>
-                                Take Photo
-                            </button>
-                            <label class="px-3 py-1 text-sm bg-gray-600 text-white rounded-md flex items-center cursor-pointer">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="icon mr-1" viewBox="0 0 24 24">
-                                    <line x1="12" y1="5" x2="12" y2="19"></line>
-                                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                                </svg>
-                                Add Photo
-                                <input type="file" accept="image/*" class="hidden upload-photo-input">
-                            </label>
-                        </div>
-                    `;
-                    
-                    // Add event listeners for photo buttons
-                    const takePhotoBtn = photosContainer.querySelector('.take-photo-btn');
-                    takePhotoBtn.addEventListener('click', () => {
-                        startCamera(section.id, task.id);
-                    });
-                    
-                    const uploadPhotoInput = photosContainer.querySelector('.upload-photo-input');
-                    uploadPhotoInput.addEventListener('change', (e) => {
-                        handleFileUpload(section.id, task.id, e);
-                    });
-                    
-                    // Render existing photos
-                    const photoThumbnails = photosContainer.querySelector('.photo-thumbnails');
-                    task.photos.forEach(photo => {
-                        const thumbnail = document.createElement('div');
-                        thumbnail.className = 'thumbnail-container';
-                        thumbnail.innerHTML = `
-                            <img src="${photo.dataUrl}" alt="Inspection photo" class="w-24 h-24 object-cover rounded border border-gray-300">
-                            <button class="remove-photo" data-photo-id="${photo.id}">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="icon" viewBox="0 0 24 24" width="14" height="14">
-                                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                                </svg>
-                            </button>
-                        `;
-                        
-                        // Add click event to remove button
-                        const removeBtn = thumbnail.querySelector('.remove-photo');
-                        removeBtn.addEventListener('click', () => {
-                            removePhoto(section.id, task.id, photo.id);
-                        });
-                        
-                        photoThumbnails.appendChild(thumbnail);
-                    });
-                    
-                    taskContent.appendChild(photosContainer);
-                    taskElement.appendChild(taskContent);
-                    sectionElement.appendChild(taskElement);
-                });
-                
-                checklistContainer.appendChild(sectionElement);
-            });
-            
-            updateProgress();
-        }
-
-        // Toggle a task's completion status
-        function toggleTask(sectionId, taskId) {
-            checklist = checklist.map(section => {
-                if (section.id == sectionId) {
-                    return {
-                        ...section,
-                        tasks: section.tasks.map(task => {
-                            if (task.id === taskId) {
-                                return { ...task, completed: !task.completed };
-                            }
-                            return task;
-                        })
-                    };
+        
+        // Fill form fields with saved data
+        function fillFormFields() {
+            // Fill setup fields
+            for (const field in appData.setup) {
+                const element = document.getElementById(field.replace(/([A-Z])/g, '-$1').toLowerCase());
+                if (element && appData.setup[field]) {
+                    element.value = appData.setup[field];
                 }
-                return section;
-            });
-            
-            saveToLocalStorage();
-            renderChecklist();
-        }
-
-        // Update a task's notes
-        function updateTaskNotes(sectionId, taskId, notes) {
-            checklist = checklist.map(section => {
-                if (section.id == sectionId) {
-                    return {
-                        ...section,
-                        tasks: section.tasks.map(task => {
-                            if (task.id === taskId) {
-                                return { ...task, notes: notes };
-                            }
-                            return task;
-                        })
-                    };
-                }
-                return section;
-            });
-            
-            saveToLocalStorage();
-        }
-
-        // Start camera for taking a photo
-        function startCamera(sectionId, taskId) {
-            // Store which task we're taking a photo for
-            activeCamera = { sectionId, taskId };
-            
-            try {
-                // Show modal first so user knows something is happening
-                cameraModal.classList.remove('hidden');
-                
-                // Simple file upload as backup if camera doesn't work
-                const fileInput = document.createElement('input');
-                fileInput.type = 'file';
-                fileInput.accept = 'image/*';
-                fileInput.style.display = 'none';
-                
-                fileInput.addEventListener('change', (e) => {
-                    if (e.target.files && e.target.files[0]) {
-                        handleFileUpload(sectionId, taskId, e);
-                        stopCamera(); // Close the camera modal
-                    }
-                });
-                
-                // Try to access camera
-                navigator.mediaDevices.getUserMedia({ video: true })
-                    .then(stream => {
-                        mediaStream = stream;
-                        cameraVideo.srcObject = stream;
-                        cameraVideo.play();
-                    })
-                    .catch(err => {
-                        console.error('Error accessing camera:', err);
-                        
-                        // If camera fails, show a message and offer alternative
-                        const errorMsg = document.createElement('div');
-                        errorMsg.className = 'bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4';
-                        errorMsg.innerHTML = `
-                            <p><strong>Camera access failed.</strong> You can upload a photo instead.</p>
-                            <button id="uploadInsteadBtn" class="mt-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                Upload Photo Instead
-                            </button>
-                        `;
-                        
-                        // Replace video with error message
-                        const videoContainer = cameraVideo.parentNode;
-                        videoContainer.insertBefore(errorMsg, cameraVideo);
-                        cameraVideo.style.display = 'none';
-                        
-                        // Add click event to upload button
-                        document.getElementById('uploadInsteadBtn').addEventListener('click', () => {
-                            fileInput.click();
-                        });
-                    });
-                
-                // Add the file input to the document (hidden)
-                document.body.appendChild(fileInput);
-            } catch (error) {
-                console.error('Error in startCamera:', error);
-                alert('Something went wrong. Please try again or use the "Add Photo" button instead.');
-                document.body.click(); // Force any click events to trigger
-                stopCamera(); // Try to close the modal
             }
-        }
-
-        // Capture photo from camera
-        function capturePhoto() {
-            try {
-                if (!activeCamera) {
-                    console.error('No active camera session');
-                    stopCamera();
-                    return;
-                }
-                
-                if (!cameraVideo.videoWidth) {
-                    console.error('Video stream not ready');
-                    alert('Video stream not ready. Please try again.');
-                    return;
-                }
-                
-                const canvas = document.createElement('canvas');
-                canvas.width = cameraVideo.videoWidth;
-                canvas.height = cameraVideo.videoHeight;
-                const ctx = canvas.getContext('2d');
-                ctx.drawImage(cameraVideo, 0, 0, canvas.width, canvas.height);
-                
-                try {
-                    const imgDataUrl = canvas.toDataURL('image/jpeg');
-                    addPhotoToTask(activeCamera.sectionId, activeCamera.taskId, imgDataUrl);
-                } catch (e) {
-                    console.error('Error creating photo:', e);
-                    alert('Failed to capture photo. The camera may not be ready.');
-                }
-                
-                stopCamera();
-            } catch (error) {
-                console.error('Error in capturePhoto:', error);
-                alert('Failed to capture photo. Please try again or use "Add Photo" to upload an image.');
-                stopCamera();
-            }
-        }
-
-        // Stop camera and close modal with multiple fallbacks
-        function stopCamera() {
-            console.log("Attempting to stop camera and close modal");
             
-            try {
-                // Try to stop all tracks
-                if (mediaStream) {
-                    mediaStream.getTracks().forEach(track => {
-                        try {
-                            track.stop();
-                        } catch (e) {
-                            console.warn('Error stopping track:', e);
+            // Fill inspection fields for each category
+            ['preRace', 'duringRace', 'postRace'].forEach(category => {
+                for (const section in appData[category]) {
+                    // Set status radios
+                    if (appData[category][section].status) {
+                        const statusRadio = document.getElementById(`${section}-${appData[category][section].status}`);
+                        if (statusRadio) {
+                            statusRadio.checked = true;
                         }
-                    });
-                    mediaStream = null;
+                    }
+                    
+                    // Set notes
+                    const notesElement = document.getElementById(`${section}-notes`);
+                    if (notesElement && appData[category][section].notes) {
+                        notesElement.value = appData[category][section].notes;
+                    }
+                    
+                    // Set photo preview if exists
+                    const photoPreview = document.getElementById(`${section}-photo-preview`);
+                    if (photoPreview && appData[category][section].photo) {
+                        const img = document.createElement('img');
+                        img.src = appData[category][section].photo;
+                        photoPreview.innerHTML = '';
+                        photoPreview.appendChild(img);
+                    }
                 }
-            } catch (e) {
-                console.warn('Error stopping media stream:', e);
-            }
-            
-            try {
-                // Reset video source
-                if (cameraVideo && cameraVideo.srcObject) {
-                    cameraVideo.srcObject = null;
-                    cameraVideo.style.display = '';
-                }
-                
-                // Remove any error messages
-                const errorMsg = document.querySelector('.bg-red-100');
-                if (errorMsg) {
-                    errorMsg.parentNode.removeChild(errorMsg);
-                }
-                
-                // Force the modal to be hidden with multiple approaches
-                if (cameraModal) {
-                    cameraModal.classList.add('hidden');
-                    cameraModal.style.display = 'none';
-                }
-                
-                activeCamera = null;
-            } catch (error) {
-                console.error('Error in stopCamera cleanup:', error);
-            }
-            
-            // Final fallback - force browser to refresh the DOM
-            setTimeout(() => {
-                try {
-                    window.dispatchEvent(new Event('resize'));
-                } catch (e) {
-                    console.warn('Error dispatching resize event:', e);
-                }
-            }, 100);
+            });
         }
-
-        // Handle file upload
-        function handleFileUpload(sectionId, taskId, event) {
-            const file = event.target.files[0];
-            if (!file || !file.type.startsWith('image/')) {
-                alert('Please select an image file');
+        
+        // Update checklist statuses based on saved data
+        function updateChecklistStatuses() {
+            const allSections = [...inspectionSections.preRace, ...inspectionSections.duringRace, ...inspectionSections.postRace];
+            
+            allSections.forEach(section => {
+                const item = document.querySelector(`.checklist-item[data-section="${section}"]`);
+                if (!item) return;
+                
+                const category = item.getAttribute('data-category');
+                const dataCategory = categoryMap[category];
+                
+                if (appData[dataCategory] && appData[dataCategory][section] && appData[dataCategory][section].status) {
+                    const statusElement = item.querySelector('.checklist-status');
+                    if (statusElement) {
+                        statusElement.className = `checklist-status status-${appData[dataCategory][section].status}`;
+                        statusElement.textContent = appData[dataCategory][section].status.charAt(0).toUpperCase() + appData[dataCategory][section].status.slice(1);
+                    }
+                }
+            });
+        }
+        
+        // Set up tab navigation
+        function setupTabNavigation() {
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            
+            tabButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const tabId = this.getAttribute('data-tab');
+                    
+                    // Hide all tab contents
+                    document.querySelectorAll('.tab-content').forEach(tab => {
+                        tab.classList.remove('active');
+                    });
+                    
+                    // Remove active class from all tab buttons
+                    tabButtons.forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    
+                    // Show the selected tab content
+                    document.getElementById(tabId).classList.add('active');
+                    
+                    // Add active class to the clicked button
+                    this.classList.add('active');
+                });
+            });
+        }
+        
+        // Set up checklist item toggling
+        function setupChecklistToggle() {
+            const checklistHeaders = document.querySelectorAll('.checklist-header');
+            
+            checklistHeaders.forEach(header => {
+                header.addEventListener('click', function() {
+                    const content = this.nextElementSibling;
+                    
+                    if (content.classList.contains('active')) {
+                        content.classList.remove('active');
+                    } else {
+                        // Close all other open checklist items in the same category
+                        const category = this.closest('.checklist-item').getAttribute('data-category');
+                        const openItems = document.querySelectorAll(`#${category}-checklist .checklist-content.active`);
+                        
+                        openItems.forEach(item => {
+                            if (item !== content) {
+                                item.classList.remove('active');
+                            }
+                        });
+                        
+                        content.classList.add('active');
+                    }
+                });
+            });
+        }
+        
+        // Set up photo capture
+        function setupPhotoCapture() {
+            const photoButtons = document.querySelectorAll('[id$="-photo-btn"]');
+            
+            photoButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const section = this.id.replace('-photo-btn', '');
+                    const input = document.getElementById(`${section}-photo-input`);
+                    input.click();
+                });
+            });
+            
+            const photoInputs = document.querySelectorAll('[id$="-photo-input"]');
+            
+            photoInputs.forEach(input => {
+                input.addEventListener('change', function(event) {
+                    if (event.target.files && event.target.files[0]) {
+                        const section = this.id.replace('-photo-input', '');
+                        const preview = document.getElementById(`${section}-photo-preview`);
+                        const file = event.target.files[0];
+                        
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            preview.innerHTML = '';
+                            
+                            const img = document.createElement('img');
+                            img.src = e.target.result;
+                            preview.appendChild(img);
+                            
+                            // Save photo to the appData
+                            const category = preview.closest('.checklist-item').getAttribute('data-category');
+                            const sectionId = preview.closest('.checklist-item').getAttribute('data-section');
+                            
+                            savePhotoData(category, sectionId, e.target.result);
+                        };
+                        
+                        reader.readAsDataURL(file);
+                    }
+                });
+            });
+        }
+        
+        // Save photo data to appData
+        function savePhotoData(category, section, dataUrl) {
+            const dataCategory = categoryMap[category];
+            
+            if (!appData[dataCategory][section]) {
+                appData[dataCategory][section] = {};
+            }
+            
+            appData[dataCategory][section].photo = dataUrl;
+            
+            // Save to localStorage
+            localStorage.setItem('motorsportInspectionData', JSON.stringify(appData));
+            
+            showToast('Photo saved', 'success');
+        }
+        
+        // Set up save buttons
+        function setupSaveButtons() {
+            // Setup save button
+            document.getElementById('save-setup').addEventListener('click', function() {
+                saveSetupData();
+            });
+            
+            // Section save buttons
+            const sectionSaveButtons = document.querySelectorAll('[data-save]');
+            
+            sectionSaveButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const section = this.getAttribute('data-save');
+                    const category = this.closest('.checklist-item').getAttribute('data-category');
+                    
+                    saveSectionData(category, section);
+                });
+            });
+        }
+        
+        // Save setup data
+        function saveSetupData() {
+            appData.setup = {
+                studentName: document.getElementById('student-name').value,
+                studentId: document.getElementById('student-id').value,
+                course: document.getElementById('course').value,
+                instructor: document.getElementById('instructor').value,
+                inspectionDate: document.getElementById('inspection-date').value,
+                vehicleMake: document.getElementById('vehicle-make').value,
+                vehicleModel: document.getElementById('vehicle-model').value,
+                vehicleYear: document.getElementById('vehicle-year').value,
+                vehicleClass: document.getElementById('vehicle-class').value,
+                vehicleNumber: document.getElementById('vehicle-number').value
+            };
+            
+            // Save to localStorage
+            localStorage.setItem('motorsportInspectionData', JSON.stringify(appData));
+            
+            // Update summary
+            updateSummary();
+            
+            showToast('Setup information saved', 'success');
+        }
+        
+        // Save section data
+        function saveSectionData(category, section) {
+            const dataCategory = categoryMap[category];
+            
+            if (!appData[dataCategory]) {
+                appData[dataCategory] = {};
+            }
+            
+            if (!appData[dataCategory][section]) {
+                appData[dataCategory][section] = {};
+            }
+            
+            // Get status
+            const statusRadios = document.getElementsByName(`${section}-status`);
+            let selectedStatus = '';
+            
+            for (const radio of statusRadios) {
+                if (radio.checked) {
+                    selectedStatus = radio.value;
+                    break;
+                }
+            }
+            
+            if (!selectedStatus) {
+                showToast('Please select a status', 'error');
                 return;
             }
-
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                addPhotoToTask(sectionId, taskId, e.target.result);
-            };
-            reader.readAsDataURL(file);
+            
+            // Get notes
+            const notes = document.getElementById(`${section}-notes`).value;
+            
+            // Save data
+            appData[dataCategory][section].status = selectedStatus;
+            appData[dataCategory][section].notes = notes;
+            
+            // Update the checklist item status
+            const statusElement = document.querySelector(`.checklist-item[data-section="${section}"] .checklist-status`);
+            if (statusElement) {
+                statusElement.className = `checklist-status status-${selectedStatus}`;
+                statusElement.textContent = selectedStatus.charAt(0).toUpperCase() + selectedStatus.slice(1);
+            }
+            
+            // Save to localStorage
+            localStorage.setItem('motorsportInspectionData', JSON.stringify(appData));
+            
+            // Update progress
+            updateProgress(category);
+            
+            // Update summary
+            updateSummary();
+            
+            showToast('Section saved successfully', 'success');
         }
-
-        // Add photo to task
-        function addPhotoToTask(sectionId, taskId, photoDataUrl) {
-            checklist = checklist.map(section => {
-                if (section.id == sectionId) {
-                    return {
-                        ...section,
-                        tasks: section.tasks.map(task => {
-                            if (task.id === taskId) {
-                                return { 
-                                    ...task, 
-                                    photos: [...task.photos, { id: Date.now(), dataUrl: photoDataUrl }] 
-                                };
-                            }
-                            return task;
-                        })
-                    };
-                }
-                return section;
+        
+        // Set up navigation buttons
+        function setupNavigationButtons() {
+            // Setup to Pre-Race
+            document.getElementById('next-to-pre-race').addEventListener('click', function() {
+                navigateToTab('pre-race');
             });
             
-            saveToLocalStorage();
-            renderChecklist();
-        }
-
-        // Remove photo from task
-        function removePhoto(sectionId, taskId, photoId) {
-            checklist = checklist.map(section => {
-                if (section.id == sectionId) {
-                    return {
-                        ...section,
-                        tasks: section.tasks.map(task => {
-                            if (task.id === taskId) {
-                                return { 
-                                    ...task, 
-                                    photos: task.photos.filter(photo => photo.id != photoId) 
-                                };
-                            }
-                            return task;
-                        })
-                    };
-                }
-                return section;
+            // Pre-Race to During-Race
+            document.getElementById('next-to-during-race').addEventListener('click', function() {
+                navigateToTab('during-race');
             });
             
-            saveToLocalStorage();
-            renderChecklist();
+            // During-Race to Post-Race
+            document.getElementById('next-to-post-race').addEventListener('click', function() {
+                navigateToTab('post-race');
+            });
+            
+            // Post-Race to Report
+            document.getElementById('next-to-report').addEventListener('click', function() {
+                navigateToTab('report');
+            });
+            
+            // Back buttons
+            document.getElementById('back-to-setup').addEventListener('click', function() {
+                navigateToTab('setup');
+            });
+            
+            document.getElementById('back-to-pre-race').addEventListener('click', function() {
+                navigateToTab('pre-race');
+            });
+            
+            document.getElementById('back-to-during-race').addEventListener('click', function() {
+                navigateToTab('during-race');
+            });
+            
+            document.getElementById('back-to-post-race').addEventListener('click', function() {
+                navigateToTab('post-race');
+            });
         }
-
-        // Calculate progress percentage
-        function calculateProgress() {
-            let total = 0;
+        
+        // Navigate to tab
+        function navigateToTab(tabId) {
+            const tabBtn = document.querySelector(`.tab-btn[data-tab="${tabId}"]`);
+            if (tabBtn) {
+                tabBtn.click();
+            }
+        }
+        
+        // Update progress for a category
+        function updateProgress(category) {
+            const dataCategory = categoryMap[category];
+            const sections = inspectionSections[dataCategory];
+            
+            let completedSections = 0;
+            
+            sections.forEach(section => {
+                if (appData[dataCategory][section] && appData[dataCategory][section].status) {
+                    completedSections++;
+                }
+            });
+            
+            const progressPercentage = Math.round((completedSections / sections.length) * 100);
+            
+            // Update progress element
+            const progressElement = document.getElementById(`${category}-progress`);
+            const progressBarElement = document.getElementById(`${category}-progress-bar`);
+            
+            if (progressElement && progressBarElement) {
+                progressElement.textContent = `${progressPercentage}%`;
+                progressBarElement.style.width = `${progressPercentage}%`;
+            }
+        }
+        
+        // Update all progress indicators
+        function updateAllProgress() {
+            updateProgress('pre-race');
+            updateProgress('during-race');
+            updateProgress('post-race');
+        }
+        
+        // Update summary section
+        function updateSummary() {
+            // Update student and vehicle info
+            document.getElementById('summary-student-name').textContent = appData.setup.studentName || '-';
+            document.getElementById('summary-vehicle').textContent = `${appData.setup.vehicleMake || ''} ${appData.setup.vehicleModel || ''} (${appData.setup.vehicleYear || ''})`.trim() || '-';
+            document.getElementById('summary-date').textContent = appData.setup.inspectionDate || '-';
+            
+            // Calculate overall status
+            let overallStatus = 'Pending';
+            let totalSections = 0;
+            let completedSections = 0;
+            let passedSections = 0;
+            let failedSections = 0;
+            let warningSections = 0;
+            
+            ['preRace', 'duringRace', 'postRace'].forEach(category => {
+                const sections = inspectionSections[category];
+                totalSections += sections.length;
+                
+                sections.forEach(section => {
+                    if (appData[category][section] && appData[category][section].status) {
+                        completedSections++;
+                        
+                        if (appData[category][section].status === 'pass') {
+                            passedSections++;
+                        } else if (appData[category][section].status === 'fail') {
+                            failedSections++;
+                        } else if (appData[category][section].status === 'warning') {
+                            warningSections++;
+                        }
+                    }
+                });
+            });
+            
+            // Determine overall status
+            if (completedSections === 0) {
+                overallStatus = 'Not Started';
+            } else if (completedSections < totalSections) {
+                overallStatus = 'In Progress';
+            } else if (failedSections > 0) {
+                overallStatus = 'Failed';
+            } else if (warningSections > 0) {
+                overallStatus = 'Passed with Warnings';
+            } else {
+                overallStatus = 'Passed';
+            }
+            
+            document.getElementById('summary-status').textContent = overallStatus;
+            
+            // Update completion percentages
+            const preRaceProgress = Math.round((getCompletedSections('preRace') / inspectionSections.preRace.length) * 100);
+            const duringRaceProgress = Math.round((getCompletedSections('duringRace') / inspectionSections.duringRace.length) * 100);
+            const postRaceProgress = Math.round((getCompletedSections('postRace') / inspectionSections.postRace.length) * 100);
+            const overallProgress = Math.round((completedSections / totalSections) * 100);
+            
+            document.getElementById('summary-pre-race').textContent = `${preRaceProgress}%`;
+            document.getElementById('summary-during-race').textContent = `${duringRaceProgress}%`;
+            document.getElementById('summary-post-race').textContent = `${postRaceProgress}%`;
+            document.getElementById('summary-overall').textContent = `${overallProgress}%`;
+            
+            // Generate key findings
+            if (completedSections > 0) {
+                generateKeyFindings();
+            }
+        }
+        
+        // Get completed sections count for a category
+        function getCompletedSections(category) {
+            const sections = inspectionSections[category];
             let completed = 0;
             
-            checklist.forEach(section => {
-                section.tasks.forEach(task => {
-                    total++;
-                    if (task.completed) {
-                        completed++;
-                    }
-                });
+            sections.forEach(section => {
+                if (appData[category][section] && appData[category][section].status) {
+                    completed++;
+                }
             });
             
-            return total > 0 ? Math.round((completed / total) * 100) : 0;
+            return completed;
         }
-
-        // Update progress display
-        function updateProgress() {
-            const progress = calculateProgress();
-            progressBar.style.width = `${progress}%`;
-            progressText.textContent = `${progress}% Complete`;
-        }
-
-        // Update header title based on inspection type
-        function updateHeaderTitle() {
-            const inspectionTypeName = 
-                studentInfo.inspectionType === 'pre-race' ? 'Pre-Race' :
-                studentInfo.inspectionType === 'during-race' ? 'During-Race' : 'Post-Race';
+        
+        // Generate key findings
+        function generateKeyFindings() {
+            const keyFindingsElement = document.getElementById('key-findings');
+            keyFindingsElement.innerHTML = '';
             
-            headerTitle.textContent = `${inspectionTypeName} Inspection Checklist`;
-        }
-
-        // Generate and download report
-        function generateReport() {
-            // Get the appropriate inspection type name
-            const inspectionTypeName = 
-                studentInfo.inspectionType === 'pre-race' ? 'Pre-Race' :
-                studentInfo.inspectionType === 'during-race' ? 'During-Race' : 'Post-Race';
+            // Get all findings with fail or warning status
+            const findings = [];
             
-            // Create a styled HTML document for the report
-            let reportContent = `
-                <html>
-                <head>
-                    <title>${inspectionTypeName} Inspection Report</title>
-                    <style>
-                        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
-                        h1 { color: #333; text-align: center; }
-                        .header-info { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
-                        .header-info div { margin-bottom: 10px; }
-                        .header-info label { font-weight: bold; }
-                        .section { margin-bottom: 30px; }
-                        .section-title { background-color: #f0f0f0; padding: 8px; margin-bottom: 10px; }
-                        .task { border: 1px solid #ddd; padding: 10px; margin-bottom: 10px; }
-                        .task-header { display: flex; align-items: center; margin-bottom: 8px; }
-                        .task-status { margin-right: 10px; font-weight: bold; color: green; }
-                        .task-status.incomplete { color: red; }
-                        .task-notes { background-color: #f9f9f9; padding: 8px; margin-top: 8px; border-left: 3px solid #ddd; }
-                        .photos { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px; }
-                        .photo { max-width: 200px; max-height: 200px; border: 1px solid #ddd; }
-                        .progress-bar { height: 20px; background-color: #e0e0e0; border-radius: 10px; margin: 20px 0; }
-                        .progress-fill { height: 100%; background-color: #4caf50; border-radius: 10px; }
-                        .signature-area { margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; }
-                        .signature-line { margin-top: 50px; border-top: 1px solid #000; width: 300px; }
-                        .inspection-type { background-color: #335; color: white; padding: 10px; text-align: center; margin-bottom: 20px; border-radius: 5px; }
-                    </style>
-                </head>
-                <body>
-                    <h1>${inspectionTypeName} Inspection Report</h1>
-                    
-                    <div class="inspection-type">
-                        ${inspectionTypeName} Inspection
-                    </div>
-                    
-                    <div class="header-info">
-                        <div><label>Student Name:</label> ${studentInfo.name || 'Not provided'}</div>
-                        <div><label>Student ID:</label> ${studentInfo.studentId || 'Not provided'}</div>
-                        <div><label>Date:</label> ${studentInfo.date || 'Not provided'}</div>
-                        <div><label>Vehicle ID:</label> ${studentInfo.vehicleId || 'Not provided'}</div>
-                        <div><label>Race Event:</label> ${studentInfo.raceEvent || 'Not provided'}</div>
-                        <div><label>Car Class:</label> ${studentInfo.carClass || 'Not provided'}</div>
-                        <div><label>Team Name:</label> ${studentInfo.teamName || 'Not provided'}</div>
-                        <div><label>Scrutineer Name:</label> ${studentInfo.scrutineerName || 'Not provided'}</div>
-                    </div>
-                    
-                    <div class="progress-section">
-                        <h2>Inspection Progress: ${calculateProgress()}%</h2>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: ${calculateProgress()}%;"></div>
-                        </div>
-                    </div>
-            `;
-
-            // Add each section and its tasks
-            checklist.forEach(section => {
-                reportContent += `
-                    <div class="section">
-                        <h2 class="section-title">${section.title}</h2>
-                `;
+            ['preRace', 'duringRace', 'postRace'].forEach(category => {
+                const categoryName = category === 'preRace' ? 'Pre-Race' : category === 'duringRace' ? 'During-Race' : 'Post-Race';
                 
-                section.tasks.forEach(task => {
-                    reportContent += `
-                        <div class="task">
-                            <div class="task-header">
-                                <span class="task-status ${task.completed ? 'complete' : 'incomplete'}">
-                                    ${task.completed ? '✓' : '✗'}
-                                </span>
-                                <span class="task-text">${task.text}</span>
-                            </div>
-                    `;
-                    
-                    if (task.notes) {
-                        reportContent += `
-                            <div class="task-notes">
-                                <strong>Notes:</strong> ${task.notes}
-                            </div>
-                        `;
-                    }
-                    
-                    if (task.photos.length > 0) {
-                        reportContent += `<div class="photos">`;
-                        task.photos.forEach(photo => {
-                            reportContent += `<img class="photo" src="${photo.dataUrl}" alt="Inspection photo">`;
+                for (const section in appData[category]) {
+                    if (appData[category][section].status === 'fail' || appData[category][section].status === 'warning') {
+                        const sectionTitle = document.querySelector(`.checklist-item[data-section="${section}"] .checklist-title`).textContent;
+                        
+                        findings.push({
+                            category: categoryName,
+                            section: sectionTitle,
+                            status: appData[category][section].status,
+                            notes: appData[category][section].notes
                         });
-                        reportContent += `</div>`;
                     }
+                }
+            });
+            
+            if (findings.length === 0) {
+                const p = document.createElement('p');
+                p.textContent = 'No issues detected in the completed sections.';
+                keyFindingsElement.appendChild(p);
+            } else {
+                findings.forEach(finding => {
+                    const div = document.createElement('div');
+                    div.className = 'summary-item';
                     
-                    reportContent += `</div>`;
+                    const spanTitle = document.createElement('span');
+                    spanTitle.textContent = `${finding.category} - ${finding.section}`;
+                    
+                    const spanStatus = document.createElement('span');
+                    spanStatus.className = `status-${finding.status}`;
+                    spanStatus.textContent = finding.status.charAt(0).toUpperCase() + finding.status.slice(1);
+                    
+                    div.appendChild(spanTitle);
+                    div.appendChild(spanStatus);
+                    
+                    keyFindingsElement.appendChild(div);
+                    
+                    if (finding.notes) {
+                        const notesPara = document.createElement('p');
+                        notesPara.style.fontSize = '0.9rem';
+                        notesPara.style.fontStyle = 'italic';
+                        notesPara.style.marginBottom = '10px';
+                        notesPara.textContent = finding.notes;
+                        keyFindingsElement.appendChild(notesPara);
+                    }
+                });
+            }
+        }
+        
+        // Set up report generation
+        function setupReportGeneration() {
+            // Preview report button
+            document.getElementById('preview-report').addEventListener('click', function() {
+                generateReportPreview();
+                document.getElementById('report-modal').style.display = 'block';
+            });
+            
+            // Close modal buttons
+            document.getElementById('close-report-modal').addEventListener('click', function() {
+                document.getElementById('report-modal').style.display = 'none';
+            });
+            
+            document.getElementById('close-preview').addEventListener('click', function() {
+                document.getElementById('report-modal').style.display = 'none';
+            });
+            
+            // Download report buttons
+            document.getElementById('download-report').addEventListener('click', downloadPDF);
+            document.getElementById('download-report-modal').addEventListener('click', downloadPDF);
+            
+            // Phase-specific download buttons
+            document.getElementById('download-pre-race-report').addEventListener('click', function() {
+                downloadPhasePDF('preRace', 'Pre-Race');
+            });
+            
+            document.getElementById('download-during-race-report').addEventListener('click', function() {
+                downloadPhasePDF('duringRace', 'During-Race');
+            });
+            
+            document.getElementById('download-post-race-report').addEventListener('click', function() {
+                downloadPhasePDF('postRace', 'Post-Race');
+            });
+        }
+        
+        // Generate report preview
+        function generateReportPreview() {
+            const reportPreview = document.getElementById('report-preview');
+            reportPreview.innerHTML = '';
+            
+            // Create report header
+            const header = document.createElement('div');
+            header.className = 'report-header';
+            
+            const title = document.createElement('div');
+            title.className = 'report-title';
+            title.textContent = 'Motorsport Race Inspection Report';
+            
+            const subtitle = document.createElement('div');
+            subtitle.className = 'report-subtitle';
+            subtitle.textContent = `Generated on ${new Date().toLocaleDateString('en-GB')}`;
+            
+            header.appendChild(title);
+            header.appendChild(subtitle);
+            reportPreview.appendChild(header);
+            
+            // Add metadata
+            const metadata = document.createElement('div');
+            metadata.className = 'report-metadata';
+            
+            const metadataItems = [
+                { label: 'Student Name', value: appData.setup.studentName || 'N/A' },
+                { label: 'Student ID', value: appData.setup.studentId || 'N/A' },
+                { label: 'Course', value: appData.setup.course || 'N/A' },
+                { label: 'Instructor', value: appData.setup.instructor || 'N/A' },
+                { label: 'Inspection Date', value: appData.setup.inspectionDate || 'N/A' },
+                { label: 'Vehicle', value: `${appData.setup.vehicleMake || ''} ${appData.setup.vehicleModel || ''} (${appData.setup.vehicleYear || ''})`.trim() || 'N/A' },
+                { label: 'Vehicle Class', value: appData.setup.vehicleClass || 'N/A' },
+                { label: 'Vehicle Number', value: appData.setup.vehicleNumber || 'N/A' }
+            ];
+            
+            metadataItems.forEach(item => {
+                const metaItem = document.createElement('div');
+                metaItem.className = 'report-metadata-item';
+                
+                const label = document.createElement('div');
+                label.className = 'report-metadata-label';
+                label.textContent = item.label;
+                
+                const value = document.createElement('div');
+                value.className = 'report-metadata-value';
+                value.textContent = item.value;
+                
+                metaItem.appendChild(label);
+                metaItem.appendChild(value);
+                metadata.appendChild(metaItem);
+            });
+            
+            reportPreview.appendChild(metadata);
+            
+            // Add inspection sections
+            const categories = [
+                { id: 'preRace', title: 'Pre-Race Inspection' },
+                { id: 'duringRace', title: 'During-Race Inspection' },
+                { id: 'postRace', title: 'Post-Race Inspection' }
+            ];
+            
+            categories.forEach(category => {
+                const section = document.createElement('div');
+                section.className = 'report-section';
+                
+                const sectionTitle = document.createElement('h2');
+                sectionTitle.className = 'report-section-title';
+                sectionTitle.textContent = category.title;
+                
+                section.appendChild(sectionTitle);
+                
+                // Add inspection items
+                const sections = inspectionSections[category.id];
+                
+                sections.forEach(sectionId => {
+                    if (appData[category.id][sectionId] && appData[category.id][sectionId].status) {
+                        const sectionTitle = document.querySelector(`.checklist-item[data-section="${sectionId}"] .checklist-title`).textContent;
+                        
+                        const item = document.createElement('div');
+                        item.className = 'report-item';
+                        
+                        const itemTitle = document.createElement('div');
+                        itemTitle.className = 'report-item-title';
+                        itemTitle.textContent = sectionTitle;
+                        
+                        const itemStatus = document.createElement('span');
+                        itemStatus.className = `report-item-status status-${appData[category.id][sectionId].status}`;
+                        itemStatus.textContent = appData[category.id][sectionId].status.charAt(0).toUpperCase() + appData[category.id][sectionId].status.slice(1);
+                        
+                        item.appendChild(itemTitle);
+                        item.appendChild(itemStatus);
+                        
+                        if (appData[category.id][sectionId].notes) {
+                            const itemNotes = document.createElement('div');
+                            itemNotes.className = 'report-item-notes';
+                            itemNotes.textContent = appData[category.id][sectionId].notes;
+                            item.appendChild(itemNotes);
+                        }
+                        
+                        if (appData[category.id][sectionId].photo) {
+                            const itemImages = document.createElement('div');
+                            itemImages.className = 'report-images';
+                            
+                            const img = document.createElement('img');
+                            img.className = 'report-image';
+                            img.src = appData[category.id][sectionId].photo;
+                            img.alt = `${sectionTitle} photo`;
+                            
+                            itemImages.appendChild(img);
+                            item.appendChild(itemImages);
+                        }
+                        
+                        section.appendChild(item);
+                    }
                 });
                 
-                reportContent += `</div>`;
+                reportPreview.appendChild(section);
             });
             
-            // Add signature area
-            reportContent += `
-                <div class="signature-area">
-                    <div>
-                        <p>Inspection Completed By:</p>
-                        <div class="signature-line"></div>
-                        <p>Student Signature</p>
-                    </div>
-                    <div style="margin-top: 30px;">
-                        <div class="signature-line"></div>
-                        <p>Instructor/Scrutineer Signature</p>
-                    </div>
-                </div>
+            // Add footer
+            const footer = document.createElement('div');
+            footer.className = 'report-footer';
+            footer.textContent = 'This report was generated using the Motorsport Race Inspection Checklist App';
+            
+            reportPreview.appendChild(footer);
+        }
+        
+        // Download report as PDF
+        function downloadPDF() {
+            // Show toast indicating PDF generation
+            showToast('Generating PDF...', 'info');
+            
+            // Get the report content
+            const reportElement = document.getElementById('report-preview');
+            
+            // Use html2canvas to capture the report as an image
+            html2canvas(reportElement).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jspdf.jsPDF('p', 'mm', 'a4');
+                
+                const imgWidth = 210;
+                const pageHeight = 295;
+                const imgHeight = canvas.height * imgWidth / canvas.width;
+                let heightLeft = imgHeight;
+                let position = 0;
+                
+                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+                
+                while (heightLeft > 0) {
+                    position = heightLeft - imgHeight;
+                    pdf.addPage();
+                    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                    heightLeft -= pageHeight;
+                }
+                
+                // Generate filename based on student name and date
+                const studentName = appData.setup.studentName ? appData.setup.studentName.replace(/\s+/g, '_') : 'Unnamed';
+                const today = new Date().toISOString().slice(0, 10);
+                const filename = `Motorsport_Inspection_${studentName}_${today}.pdf`;
+                
+                pdf.save(filename);
+                
+                showToast('PDF downloaded successfully', 'success');
+            });
+        }
+        
+        // Download phase-specific PDF report
+        function downloadPhasePDF(phase, phaseTitle) {
+            // Show toast indicating PDF generation
+            showToast(`Generating ${phaseTitle} phase report...`, 'info');
+            
+            // Create a temporary div to hold the phase report
+            const tempReport = document.createElement('div');
+            tempReport.className = 'report-container';
+            tempReport.style.padding = '20px';
+            tempReport.style.backgroundColor = 'white';
+            tempReport.style.maxWidth = '800px';
+            tempReport.style.margin = '0 auto';
+            
+            // Create report header
+            const header = document.createElement('div');
+            header.style.borderBottom = '2px solid #15803d';
+            header.style.paddingBottom = '15px';
+            header.style.marginBottom = '20px';
+            
+            const title = document.createElement('h1');
+            title.style.color = '#15803d';
+            title.style.fontSize = '24px';
+            title.style.fontWeight = 'bold';
+            title.textContent = `Motorsport ${phaseTitle} Inspection Report`;
+            
+            const subtitle = document.createElement('div');
+            subtitle.style.color = '#64748b';
+            subtitle.style.fontSize = '16px';
+            subtitle.style.marginTop = '5px';
+            subtitle.textContent = `Generated on ${new Date().toLocaleDateString('en-GB')}`;
+            
+            header.appendChild(title);
+            header.appendChild(subtitle);
+            tempReport.appendChild(header);
+            
+            // Add metadata
+            const metadata = document.createElement('div');
+            metadata.style.display = 'grid';
+            metadata.style.gridTemplateColumns = 'repeat(2, 1fr)';
+            metadata.style.gap = '10px';
+            metadata.style.marginBottom = '20px';
+            
+            const metadataItems = [
+                { label: 'Student Name', value: appData.setup.studentName || 'N/A' },
+                { label: 'Student ID', value: appData.setup.studentId || 'N/A' },
+                { label: 'Course', value: appData.setup.course || 'N/A' },
+                { label: 'Instructor', value: appData.setup.instructor || 'N/A' },
+                { label: 'Inspection Date', value: appData.setup.inspectionDate || 'N/A' },
+                { label: 'Vehicle', value: `${appData.setup.vehicleMake || ''} ${appData.setup.vehicleModel || ''} (${appData.setup.vehicleYear || ''})`.trim() || 'N/A' },
+                { label: 'Vehicle Class', value: appData.setup.vehicleClass || 'N/A' },
+                { label: 'Vehicle Number', value: appData.setup.vehicleNumber || 'N/A' }
+            ];
+            
+            metadataItems.forEach(item => {
+                const metaItem = document.createElement('div');
+                metaItem.style.backgroundColor = '#f8fafc';
+                metaItem.style.padding = '10px';
+                metaItem.style.borderRadius = '4px';
+                
+                const label = document.createElement('div');
+                label.style.fontWeight = 'bold';
+                label.style.color = '#15803d';
+                label.style.fontSize = '14px';
+                label.textContent = item.label;
+                
+                const value = document.createElement('div');
+                value.style.fontSize = '16px';
+                value.style.marginTop = '5px';
+                value.textContent = item.value;
+                
+                metaItem.appendChild(label);
+                metaItem.appendChild(value);
+                metadata.appendChild(metaItem);
+            });
+            
+            tempReport.appendChild(metadata);
+            
+            // Add phase-specific section
+            const section = document.createElement('div');
+            section.style.marginBottom = '20px';
+            
+            const sectionTitle = document.createElement('h2');
+            sectionTitle.style.color = '#15803d';
+            sectionTitle.style.fontSize = '18px';
+            sectionTitle.style.fontWeight = 'bold';
+            sectionTitle.style.borderBottom = '1px solid #e2e8f0';
+            sectionTitle.style.paddingBottom = '5px';
+            sectionTitle.style.marginBottom = '10px';
+            sectionTitle.textContent = `${phaseTitle} Inspection Details`;
+            
+            section.appendChild(sectionTitle);
+            
+            // Add inspection items for this phase
+            const sections = inspectionSections[phase];
+            let itemsAdded = false;
+            
+            sections.forEach(sectionId => {
+                if (appData[phase][sectionId] && appData[phase][sectionId].status) {
+                    itemsAdded = true;
+                    const sectionTitle = document.querySelector(`.checklist-item[data-section="${sectionId}"] .checklist-title`).textContent;
+                    
+                    const item = document.createElement('div');
+                    item.style.marginBottom = '15px';
+                    item.style.padding = '10px';
+                    item.style.borderRadius = '4px';
+                    item.style.backgroundColor = '#f8fafc';
+                    
+                    const itemTitle = document.createElement('div');
+                    itemTitle.style.fontWeight = 'bold';
+                    itemTitle.style.marginBottom = '5px';
+                    itemTitle.textContent = sectionTitle;
+                    
+                    const itemStatus = document.createElement('span');
+                    const statusClass = appData[phase][sectionId].status;
+                    let statusColor = '';
+                    
+                    if (statusClass === 'pass') {
+                        statusColor = '#22c55e';
+                    } else if (statusClass === 'fail') {
+                        statusColor = '#ef4444';
+                    } else if (statusClass === 'warning') {
+                        statusColor = '#eab308';
+                    }
+                    
+                    itemStatus.style.display = 'inline-block';
+                    itemStatus.style.padding = '3px 8px';
+                    itemStatus.style.borderRadius = '4px';
+                    itemStatus.style.fontSize = '12px';
+                    itemStatus.style.fontWeight = 'bold';
+                    itemStatus.style.backgroundColor = statusColor;
+                    itemStatus.style.color = 'white';
+                    itemStatus.textContent = appData[phase][sectionId].status.charAt(0).toUpperCase() + appData[phase][sectionId].status.slice(1);
+                    
+                    item.appendChild(itemTitle);
+                    item.appendChild(itemStatus);
+                    
+                    if (appData[phase][sectionId].notes) {
+                        const itemNotes = document.createElement('div');
+                        itemNotes.style.marginTop = '10px';
+                        itemNotes.style.fontStyle = 'italic';
+                        itemNotes.textContent = appData[phase][sectionId].notes;
+                        item.appendChild(itemNotes);
+                    }
+                    
+                    if (appData[phase][sectionId].photo) {
+                        const itemImages = document.createElement('div');
+                        itemImages.style.marginTop = '10px';
+                        
+                        const img = document.createElement('img');
+                        img.style.maxWidth = '100%';
+                        img.style.height = '150px';
+                        img.style.objectFit = 'cover';
+                        img.style.borderRadius = '4px';
+                        img.style.border = '1px solid #e2e8f0';
+                        img.src = appData[phase][sectionId].photo;
+                        img.alt = `${sectionTitle} photo`;
+                        
+                        itemImages.appendChild(img);
+                        item.appendChild(itemImages);
+                    }
+                    
+                    section.appendChild(item);
+                }
+            });
+            
+            if (!itemsAdded) {
+                const noItems = document.createElement('p');
+                noItems.textContent = 'No completed inspection items found for this phase.';
+                section.appendChild(noItems);
+            }
+            
+            tempReport.appendChild(section);
+            
+            // Add footer
+            const footer = document.createElement('div');
+            footer.style.marginTop = '30px';
+            footer.style.textAlign = 'center';
+            footer.style.color = '#64748b';
+            footer.style.fontSize = '14px';
+            footer.textContent = 'This report was generated using the Motorsport Race Inspection Checklist App';
+            
+            tempReport.appendChild(footer);
+            
+            // Append the temporary element to body but make it invisible
+            tempReport.style.position = 'absolute';
+            tempReport.style.left = '-9999px';
+            document.body.appendChild(tempReport);
+            
+            // Use html2canvas to capture the report as an image
+            html2canvas(tempReport).then(canvas => {
+                // Remove the temporary element
+                document.body.removeChild(tempReport);
+                
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jspdf.jsPDF('p', 'mm', 'a4');
+                
+                const imgWidth = 210;
+                const pageHeight = 295;
+                const imgHeight = canvas.height * imgWidth / canvas.width;
+                let heightLeft = imgHeight;
+                let position = 0;
+                
+                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+                
+                while (heightLeft > 0) {
+                    position = heightLeft - imgHeight;
+                    pdf.addPage();
+                    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                    heightLeft -= pageHeight;
+                }
+                
+                // Generate filename based on student name, phase and date
+                const studentName = appData.setup.studentName ? appData.setup.studentName.replace(/\s+/g, '_') : 'Unnamed';
+                const today = new Date().toISOString().slice(0, 10);
+                const filename = `Motorsport_${phaseTitle}_Inspection_${studentName}_${today}.pdf`;
+                
+                pdf.save(filename);
+                
+                showToast(`${phaseTitle} phase report downloaded successfully`, 'success');
+            });
+        }
+        
+        // Show toast notification
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            toast.innerHTML = `
+                <div>${message}</div>
+                <button class="toast-close">&times;</button>
             `;
             
-            reportContent += `
-                </body>
-                </html>
-            `;
+            document.getElementById('toast-container').appendChild(toast);
             
-            // Create blob and download link
-            const blob = new Blob([reportContent], { type: 'text/html' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
+            // Add event listener to close button
+            toast.querySelector('.toast-close').addEventListener('click', function() {
+                toast.remove();
+            });
             
-            // Include inspection type in the filename
-            const inspectionTypeShort = studentInfo.inspectionType.replace('-', '');
-            a.download = `${inspectionTypeShort}-inspection-report-${studentInfo.name ? studentInfo.name.replace(/\s+/g, '-') : 'unnamed'}-${new Date().toISOString().split('T')[0]}.html`;
-            
-            document.body.appendChild(a);
-            a.click();
-            
-            // Clean up
+            // Auto remove after 5 seconds
             setTimeout(() => {
-                URL.revokeObjectURL(url);
-                document.body.removeChild(a);
-            }, 100);
+                toast.remove();
+            }, 5000);
         }
-
-        // Reset form to default values
-        function resetForm() {
-            if (confirm('Are you sure you want to reset the form? All data will be lost.')) {
-                studentInfo = {
-                    name: '',
-                    studentId: '',
-                    date: new Date().toISOString().split('T')[0],
-                    vehicleId: '',
-                    raceEvent: '',
-                    carClass: '',
-                    teamName: '',
-                    scrutineerName: '',
-                    inspectionType: studentInfo.inspectionType // Keep the current inspection type
-                };
-                
-                checklist = generateChecklist(studentInfo.inspectionType);
-                
-                // Reset form fields
-                document.getElementById('studentName').value = '';
-                document.getElementById('studentId').value = '';
-                document.getElementById('inspectionDate').value = studentInfo.date;
-                document.getElementById('vehicleId').value = '';
-                document.getElementById('raceEvent').value = '';
-                document.getElementById('carClass').value = '';
-                document.getElementById('teamName').value = '';
-                document.getElementById('scrutineerName').value = '';
-                
-                // Clear localStorage
-                localStorage.removeItem('raceInspectionChecklist');
-                localStorage.removeItem('raceInspectionStudentInfo');
-                
-                renderChecklist();
-            }
-        }
-
-        // Save data to localStorage
-        function saveToLocalStorage() {
-            localStorage.setItem('raceInspectionChecklist', JSON.stringify(checklist));
-            localStorage.setItem('raceInspectionStudentInfo', JSON.stringify(studentInfo));
-        }
-
-        // Load data from localStorage
-        function loadFromLocalStorage() {
-            const savedChecklist = localStorage.getItem('raceInspectionChecklist');
-            const savedStudentInfo = localStorage.getItem('raceInspectionStudentInfo');
-            
-            if (savedStudentInfo) {
-                try {
-                    const parsedInfo = JSON.parse(savedStudentInfo);
-                    studentInfo = parsedInfo;
-                    
-                    // Update form fields
-                    document.getElementById('studentName').value = studentInfo.name || '';
-                    document.getElementById('studentId').value = studentInfo.studentId || '';
-                    document.getElementById('inspectionDate').value = studentInfo.date || new Date().toISOString().split('T')[0];
-                    document.getElementById('vehicleId').value = studentInfo.vehicleId || '';
-                    document.getElementById('raceEvent').value = studentInfo.raceEvent || '';
-                    document.getElementById('carClass').value = studentInfo.carClass || '';
-                    document.getElementById('teamName').value = studentInfo.teamName || '';
-                    document.getElementById('scrutineerName').value = studentInfo.scrutineerName || '';
-                    document.getElementById('inspectionType').value = studentInfo.inspectionType || 'post-race';
-                    
-                    updateHeaderTitle();
-                } catch (e) {
-                    console.error('Failed to load saved student info:', e);
-                }
-            }
-            
-            if (savedChecklist) {
-                try {
-                    checklist = JSON.parse(savedChecklist);
-                } catch (e) {
-                    console.error('Failed to load saved checklist:', e);
-                    checklist = generateChecklist(studentInfo.inspectionType);
-                }
-            } else {
-                checklist = generateChecklist(studentInfo.inspectionType);
-            }
-            
-            renderChecklist();
-        }
-
-        // Initialize the app
-        function initApp() {
-            // Add direct onclick handlers for camera
-            document.getElementById('closeModalBtn').onclick = stopCamera;
-            document.getElementById('cancelPhotoBtn').onclick = stopCamera;
-            document.getElementById('capturePhotoBtn').onclick = capturePhoto;
-            
-            // Set up event listeners
-            resetBtn.addEventListener('click', resetForm);
-            downloadBtn.addEventListener('click', generateReport);
-            
-            // Allow clicking outside the modal to close it
-            cameraModal.addEventListener('click', (e) => {
-                // Only close if clicking the background, not the modal content
-                if (e.target === cameraModal) {
-                    stopCamera();
-                }
-            });
-            
-            // Add keyboard escape key to close modal
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape' && !cameraModal.classList.contains('hidden')) {
-                    stopCamera();
-                }
-            });
-            
-            // Student info form fields
-            document.getElementById('studentName').addEventListener('input', (e) => {
-                studentInfo.name = e.target.value;
-                saveToLocalStorage();
-            });
-            
-            document.getElementById('studentId').addEventListener('input', (e) => {
-                studentInfo.studentId = e.target.value;
-                saveToLocalStorage();
-            });
-            
-            document.getElementById('inspectionDate').addEventListener('input', (e) => {
-                studentInfo.date = e.target.value;
-                saveToLocalStorage();
-            });
-            
-            document.getElementById('vehicleId').addEventListener('input', (e) => {
-                studentInfo.vehicleId = e.target.value;
-                saveToLocalStorage();
-            });
-            
-            document.getElementById('raceEvent').addEventListener('input', (e) => {
-                studentInfo.raceEvent = e.target.value;
-                saveToLocalStorage();
-            });
-            
-            document.getElementById('carClass').addEventListener('input', (e) => {
-                studentInfo.carClass = e.target.value;
-                saveToLocalStorage();
-            });
-            
-            document.getElementById('teamName').addEventListener('input', (e) => {
-                studentInfo.teamName = e.target.value;
-                saveToLocalStorage();
-            });
-            
-            document.getElementById('scrutineerName').addEventListener('input', (e) => {
-                studentInfo.scrutineerName = e.target.value;
-                saveToLocalStorage();
-            });
-            
-            // Inspection type change
-            inspectionTypeSelect.addEventListener('change', (e) => {
-                studentInfo.inspectionType = e.target.value;
-                checklist = generateChecklist(studentInfo.inspectionType);
-                saveToLocalStorage();
-                updateHeaderTitle();
-                renderChecklist();
-            });
-            
-            // Load saved data
-            loadFromLocalStorage();
-        }
-
-        // Start the app when DOM is loaded
-        document.addEventListener('DOMContentLoaded', initApp);
     </script>
 </body>
 </html>
