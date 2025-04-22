@@ -2,93 +2,286 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Camera, Save, Download, CheckCircle, Square, Info, X, Plus } from 'lucide-react';
 
 const RaceInspectionApp = () => {
-  // Initial checklist items with detailed motorsport-specific inspection points
-  const defaultChecklist = [
-    { id: 1, title: 'Driver Safety Equipment', tasks: [
-      { id: 'task1-1', text: 'Helmet (FIA/Snell rating, damage check, visor condition)', completed: false, notes: '', photos: [] },
-      { id: 'task1-2', text: 'HANS/FHR device (straps, tethers, mounting points)', completed: false, notes: '', photos: [] },
-      { id: 'task1-3', text: 'Race suit & underwear (FIA rating, condition, fit)', completed: false, notes: '', photos: [] },
-      { id: 'task1-4', text: 'Gloves & boots (material condition, stitching)', completed: false, notes: '', photos: [] },
-      { id: 'task1-5', text: 'Harness/seatbelt (FIA date validation, mounting points, latch mechanism)', completed: false, notes: '', photos: [] }
-    ]},
-    { id: 2, title: 'Vehicle Safety Systems', tasks: [
-      { id: 'task2-1', text: 'Fire extinguisher/suppression system (pressure, mounting, activation)', completed: false, notes: '', photos: [] },
-      { id: 'task2-2', text: 'Roll cage/ROPS (mounting points, padding, deformation)', completed: false, notes: '', photos: [] },
-      { id: 'task2-3', text: 'Driver\'s seat (FIA approval, mounting, rails, condition)', completed: false, notes: '', photos: [] },
-      { id: 'task2-4', text: 'Window nets/arm restraints (condition, mounting, operation)', completed: false, notes: '', photos: [] },
-      { id: 'task2-5', text: 'Kill switch/isolation (electrical & fuel, functionality, access)', completed: false, notes: '', photos: [] }
-    ]},
-    { id: 3, title: 'Chassis & Exterior', tasks: [
-      { id: 'task3-1', text: 'Bodywork integrity (mounting points, damage, fasteners)', completed: false, notes: '', photos: [] },
-      { id: 'task3-2', text: 'Aerodynamic components (wings, splitters, diffusers, damage)', completed: false, notes: '', photos: [] },
-      { id: 'task3-3', text: 'Door/hood/trunk latches (security, functionality)', completed: false, notes: '', photos: [] },
-      { id: 'task3-4', text: 'Competition number & required decals (visibility, placement)', completed: false, notes: '', photos: [] },
-      { id: 'task3-5', text: 'Vehicle weight (minimum weight compliance, ballast mounting)', completed: false, notes: '', photos: [] }
-    ]},
-    { id: 4, title: 'Suspension & Steering', tasks: [
-      { id: 'task4-1', text: 'Suspension components (cracks, bends, play in joints)', completed: false, notes: '', photos: [] },
-      { id: 'task4-2', text: 'Shock absorbers/springs (leaks, mounting, travel)', completed: false, notes: '', photos: [] },
-      { id: 'task4-3', text: 'Steering components (rack, arms, tie-rods, excessive play)', completed: false, notes: '', photos: [] },
-      { id: 'task4-4', text: 'Wheel bearings (excessive play, noise, heat)', completed: false, notes: '', photos: [] },
-      { id: 'task4-5', text: 'Ride height (minimum compliance, vehicle attitude)', completed: false, notes: '', photos: [] }
-    ]},
-    { id: 5, title: 'Braking System', tasks: [
-      { id: 'task5-1', text: 'Brake pads/discs (thickness, wear pattern, cracks)', completed: false, notes: '', photos: [] },
-      { id: 'task5-2', text: 'Brake lines & hoses (leaks, chafing, mounting)', completed: false, notes: '', photos: [] },
-      { id: 'task5-3', text: 'Brake calipers (mounting, piston operation, pad retaining pins)', completed: false, notes: '', photos: [] },
-      { id: 'task5-4', text: 'Brake fluid (level, condition, boiling point)', completed: false, notes: '', photos: [] },
-      { id: 'task5-5', text: 'Brake balance adjustment (bias valve, proportioning)', completed: false, notes: '', photos: [] }
-    ]},
-    { id: 6, title: 'Wheels & Tires', tasks: [
-      { id: 'task6-1', text: 'Wheels (damage, cracks, valve stems, balance weights)', completed: false, notes: '', photos: [] },
-      { id: 'task6-2', text: 'Wheel nuts/studs (torque, thread condition, locking method)', completed: false, notes: '', photos: [] },
-      { id: 'task6-3', text: 'Tire specification (correct compound, size, direction)', completed: false, notes: '', photos: [] },
-      { id: 'task6-4', text: 'Tire condition (cuts, punctures, flat spots, blistering)', completed: false, notes: '', photos: [] },
-      { id: 'task6-5', text: 'Tire pressures (hot/cold measurements, adjustments)', completed: false, notes: '', photos: [] }
-    ]},
-    { id: 7, title: 'Drivetrain & Transmission', tasks: [
-      { id: 'task7-1', text: 'Clutch (operation, free play, fluid leaks)', completed: false, notes: '', photos: [] },
-      { id: 'task7-2', text: 'Gearbox (operation, mounting, leaks)', completed: false, notes: '', photos: [] },
-      { id: 'task7-3', text: 'Driveshaft/axles (CV boots, play, mounting)', completed: false, notes: '', photos: [] },
-      { id: 'task7-4', text: 'Differential (mounting, operation, leaks)', completed: false, notes: '', photos: [] },
-      { id: 'task7-5', text: 'Transmission & differential fluid (level, condition)', completed: false, notes: '', photos: [] }
-    ]},
-    { id: 8, title: 'Engine & Cooling', tasks: [
-      { id: 'task8-1', text: 'Engine bay inspection (leaks, mounting, belt condition)', completed: false, notes: '', photos: [] },
-      { id: 'task8-2', text: 'Oil level & condition (contamination, pressure)', completed: false, notes: '', photos: [] },
-      { id: 'task8-3', text: 'Cooling system (radiator, hoses, cap, coolant level)', completed: false, notes: '', photos: [] },
-      { id: 'task8-4', text: 'Air intake system (filter, ducting, airbox)', completed: false, notes: '', photos: [] },
-      { id: 'task8-5', text: 'Exhaust system (mounting, leaks, silencer)', completed: false, notes: '', photos: [] }
-    ]},
-    { id: 9, title: 'Fuel System', tasks: [
-      { id: 'task9-1', text: 'Fuel tank/cell (FIA certification, mounting, date validation)', completed: false, notes: '', photos: [] },
-      { id: 'task9-2', text: 'Fuel lines & connections (high-pressure fittings, routing)', completed: false, notes: '', photos: [] },
-      { id: 'task9-3', text: 'Fuel pump & filter (operation, mounting)', completed: false, notes: '', photos: [] },
-      { id: 'task9-4', text: 'Fuel sample port (accessibility, functionality)', completed: false, notes: '', photos: [] },
-      { id: 'task9-5', text: 'Fuel level & type (correct specification, contamination)', completed: false, notes: '', photos: [] }
-    ]},
-    { id: 10, title: 'Electrical System', tasks: [
-      { id: 'task10-1', text: 'Battery (mounting, terminal protection, charging)', completed: false, notes: '', photos: [] },
-      { id: 'task10-2', text: 'Wiring harness (chafing, proper routing, connections)', completed: false, notes: '', photos: [] },
-      { id: 'task10-3', text: 'ECU & data systems (mounting, programming, sealing)', completed: false, notes: '', photos: [] },
-      { id: 'task10-4', text: 'Lighting systems (headlights, brake lights, rain light)', completed: false, notes: '', photos: [] },
-      { id: 'task10-5', text: 'Sensors & actuators (functionality, calibration)', completed: false, notes: '', photos: [] }
-    ]},
-    { id: 11, title: 'Cockpit & Controls', tasks: [
-      { id: 'task11-1', text: 'Steering wheel (quick release, buttons, grips)', completed: false, notes: '', photos: [] },
-      { id: 'task11-2', text: 'Pedals (operation, adjustment, mounting)', completed: false, notes: '', photos: [] },
-      { id: 'task11-3', text: 'Dashboard/instruments (functionality, visibility)', completed: false, notes: '', photos: [] },
-      { id: 'task11-4', text: 'Interior panels & trim (mounting, sharp edges)', completed: false, notes: '', photos: [] },
-      { id: 'task11-5', text: 'Camera/timing systems (mounting, power supply)', completed: false, notes: '', photos: [] }
-    ]},
-    { id: 12, title: 'Technical Compliance', tasks: [
-      { id: 'task12-1', text: 'Scrutineering seals & markings (present, unbroken)', completed: false, notes: '', photos: [] },
-      { id: 'task12-2', text: 'Homologation papers/technical passport (current, matching)', completed: false, notes: '', photos: [] },
-      { id: 'task12-3', text: 'Restrictor/BoP compliance (size, sealing)', completed: false, notes: '', photos: [] },
-      { id: 'task12-4', text: 'Noise test compliance (db level, measurement)', completed: false, notes: '', photos: [] },
-      { id: 'task12-5', text: 'Data logging retrieval (files, parameters)', completed: false, notes: '', photos: [] }
-    ]}
-  ];
+  // Generate checklist based on inspection type
+  const generateChecklist = (inspectionType) => {
+    // Common safety equipment checklist for all inspection types
+    const safetyEquipment = {
+      id: 1, 
+      title: 'Driver Safety Equipment', 
+      tasks: [
+        { id: 'task1-1', text: 'Helmet (FIA/Snell rating, damage check, visor condition)', completed: false, notes: '', photos: [] },
+        { id: 'task1-2', text: 'HANS/FHR device (straps, tethers, mounting points)', completed: false, notes: '', photos: [] },
+        { id: 'task1-3', text: 'Race suit & underwear (FIA rating, condition, fit)', completed: false, notes: '', photos: [] },
+        { id: 'task1-4', text: 'Gloves & boots (material condition, stitching)', completed: false, notes: '', photos: [] },
+        { id: 'task1-5', text: 'Harness/seatbelt (FIA date validation, mounting points, latch mechanism)', completed: false, notes: '', photos: [] }
+      ]
+    };
+    
+    const vehicleSafetySystems = {
+      id: 2, 
+      title: 'Vehicle Safety Systems', 
+      tasks: [
+        { id: 'task2-1', text: 'Fire extinguisher/suppression system (pressure, mounting, activation)', completed: false, notes: '', photos: [] },
+        { id: 'task2-2', text: 'Roll cage/ROPS (mounting points, padding, deformation)', completed: false, notes: '', photos: [] },
+        { id: 'task2-3', text: 'Driver\'s seat (FIA approval, mounting, rails, condition)', completed: false, notes: '', photos: [] },
+        { id: 'task2-4', text: 'Window nets/arm restraints (condition, mounting, operation)', completed: false, notes: '', photos: [] },
+        { id: 'task2-5', text: 'Kill switch/isolation (electrical & fuel, functionality, access)', completed: false, notes: '', photos: [] }
+      ]
+    };
+
+    // Pre-race specific inspections
+    if (inspectionType === 'pre-race') {
+      return [
+        safetyEquipment,
+        vehicleSafetySystems,
+        {
+          id: 3, 
+          title: 'Technical Compliance', 
+          tasks: [
+            { id: 'task3-1', text: 'Homologation papers/technical passport (current, matching)', completed: false, notes: '', photos: [] },
+            { id: 'task3-2', text: 'Scrutineering seals & markings (present, unbroken)', completed: false, notes: '', photos: [] },
+            { id: 'task3-3', text: 'Restrictor/BoP compliance (size, sealing)', completed: false, notes: '', photos: [] },
+            { id: 'task3-4', text: 'Vehicle weight (minimum weight compliance, ballast mounting)', completed: false, notes: '', photos: [] },
+            { id: 'task3-5', text: 'Competition number & required decals (visibility, placement)', completed: false, notes: '', photos: [] }
+          ]
+        },
+        {
+          id: 4, 
+          title: 'Wheels & Tires', 
+          tasks: [
+            { id: 'task4-1', text: 'Tire specification (correct compound, size, direction)', completed: false, notes: '', photos: [] },
+            { id: 'task4-2', text: 'Tire condition (cuts, punctures, flat spots, blistering)', completed: false, notes: '', photos: [] },
+            { id: 'task4-3', text: 'Tire pressures (cold measurements, setup)', completed: false, notes: '', photos: [] },
+            { id: 'task4-4', text: 'Wheels (damage, cracks, valve stems, balance weights)', completed: false, notes: '', photos: [] },
+            { id: 'task4-5', text: 'Wheel nuts/studs (torque, thread condition, locking method)', completed: false, notes: '', photos: [] }
+          ]
+        },
+        {
+          id: 5, 
+          title: 'Braking System', 
+          tasks: [
+            { id: 'task5-1', text: 'Brake pads/discs (thickness, condition, bedding)', completed: false, notes: '', photos: [] },
+            { id: 'task5-2', text: 'Brake lines & hoses (leaks, chafing, mounting)', completed: false, notes: '', photos: [] },
+            { id: 'task5-3', text: 'Brake calipers (mounting, piston operation, pad retaining pins)', completed: false, notes: '', photos: [] },
+            { id: 'task5-4', text: 'Brake fluid (level, condition, boiling point)', completed: false, notes: '', photos: [] },
+            { id: 'task5-5', text: 'Brake balance adjustment (bias valve, proportioning)', completed: false, notes: '', photos: [] }
+          ]
+        },
+        {
+          id: 6, 
+          title: 'Fuel System', 
+          tasks: [
+            { id: 'task6-1', text: 'Fuel level (sufficient for race duration plus contingency)', completed: false, notes: '', photos: [] },
+            { id: 'task6-2', text: 'Fuel tank/cell (FIA certification, mounting, date validation)', completed: false, notes: '', photos: [] },
+            { id: 'task6-3', text: 'Fuel lines & connections (high-pressure fittings, routing)', completed: false, notes: '', photos: [] },
+            { id: 'task6-4', text: 'Fuel pump & filter (operation, mounting)', completed: false, notes: '', photos: [] },
+            { id: 'task6-5', text: 'Fuel sample port (accessibility, functionality)', completed: false, notes: '', photos: [] }
+          ]
+        },
+        {
+          id: 7, 
+          title: 'Electrical System', 
+          tasks: [
+            { id: 'task7-1', text: 'Battery (mounting, terminal protection, charging)', completed: false, notes: '', photos: [] },
+            { id: 'task7-2', text: 'Lighting systems (headlights, brake lights, rain light)', completed: false, notes: '', photos: [] },
+            { id: 'task7-3', text: 'Wiring harness (chafing, proper routing, connections)', completed: false, notes: '', photos: [] },
+            { id: 'task7-4', text: 'ECU & data systems (mounting, programming, sealing)', completed: false, notes: '', photos: [] },
+            { id: 'task7-5', text: 'Sensors & actuators (functionality, calibration)', completed: false, notes: '', photos: [] }
+          ]
+        },
+        {
+          id: 8, 
+          title: 'Cockpit & Controls', 
+          tasks: [
+            { id: 'task8-1', text: 'Steering wheel (quick release, buttons, grips)', completed: false, notes: '', photos: [] },
+            { id: 'task8-2', text: 'Pedals (operation, adjustment, mounting)', completed: false, notes: '', photos: [] },
+            { id: 'task8-3', text: 'Dashboard/instruments (functionality, visibility)', completed: false, notes: '', photos: [] },
+            { id: 'task8-4', text: 'Radio systems (communication test, mounting)', completed: false, notes: '', photos: [] },
+            { id: 'task8-5', text: 'Driver comfort (seat position, pedal reach, visibility)', completed: false, notes: '', photos: [] }
+          ]
+        }
+      ];
+    }
+    
+    // During-race specific inspections
+    else if (inspectionType === 'during-race') {
+      return [
+        {
+          id: 3,
+          title: 'Pit Stop Inspection',
+          tasks: [
+            { id: 'task3-1', text: 'Tire change (wear pattern, pressure check, condition)', completed: false, notes: '', photos: [] },
+            { id: 'task3-2', text: 'Brake temperature (pyrometer readings, pad wear)', completed: false, notes: '', photos: [] },
+            { id: 'task3-3', text: 'Fuel level (consumption verification, refilling)', completed: false, notes: '', photos: [] },
+            { id: 'task3-4', text: 'Body damage assessment (aero components, structural)', completed: false, notes: '', photos: [] },
+            { id: 'task3-5', text: 'Fluids check (oil, coolant, brake fluid levels)', completed: false, notes: '', photos: [] }
+          ]
+        },
+        {
+          id: 4,
+          title: 'Driver Change (if applicable)',
+          tasks: [
+            { id: 'task4-1', text: 'Driver condition (fatigue, hydration, physical status)', completed: false, notes: '', photos: [] },
+            { id: 'task4-2', text: 'New driver equipment (helmet, HANS, suit, preparations)', completed: false, notes: '', photos: [] },
+            { id: 'task4-3', text: 'Seat adjustment (position, belts, comfort)', completed: false, notes: '', photos: [] },
+            { id: 'task4-4', text: 'Communications check (radio, signals, team comms)', completed: false, notes: '', photos: [] },
+            { id: 'task4-5', text: 'Driver briefing (track conditions, strategy update)', completed: false, notes: '', photos: [] }
+          ]
+        },
+        {
+          id: 5,
+          title: 'Vehicle Performance',
+          tasks: [
+            { id: 'task5-1', text: 'Data analysis (lap times, sector performance, consistency)', completed: false, notes: '', photos: [] },
+            { id: 'task5-2', text: 'Tire performance (degradation rate, grip levels)', completed: false, notes: '', photos: [] },
+            { id: 'task5-3', text: 'Fuel efficiency (consumption rate, strategy adjustment)', completed: false, notes: '', photos: [] },
+            { id: 'task5-4', text: 'Brake performance (fade, temperature management)', completed: false, notes: '', photos: [] },
+            { id: 'task5-5', text: 'Handling characteristics (balance, stability, driver feedback)', completed: false, notes: '', photos: [] }
+          ]
+        },
+        {
+          id: 6,
+          title: 'Quick Technical Checks',
+          tasks: [
+            { id: 'task6-1', text: 'Wheel torque verification (safety retightening)', completed: false, notes: '', photos: [] },
+            { id: 'task6-2', text: 'Lighting systems functionality (if race extends to dusk/night)', completed: false, notes: '', photos: [] },
+            { id: 'task6-3', text: 'Safety systems check (fire extinguisher, kill switches)', completed: false, notes: '', photos: [] },
+            { id: 'task6-4', text: 'Fluid leaks inspection (underneath car, components)', completed: false, notes: '', photos: [] },
+            { id: 'task6-5', text: 'Suspension quick check (visible damage, alignment)', completed: false, notes: '', photos: [] }
+          ]
+        },
+        {
+          id: 7,
+          title: 'Weather Response (if applicable)',
+          tasks: [
+            { id: 'task7-1', text: 'Tire selection (dry/wet/intermediate assessment)', completed: false, notes: '', photos: [] },
+            { id: 'task7-2', text: 'Setup adjustments (anti-roll bars, wing angles)', completed: false, notes: '', photos: [] },
+            { id: 'task7-3', text: 'Visibility systems (wipers, demisting, rain light)', completed: false, notes: '', photos: [] },
+            { id: 'task7-4', text: 'Track condition notes (wet patches, racing line evolution)', completed: false, notes: '', photos: [] },
+            { id: 'task7-5', text: 'Strategy revision (pit windows, fuel load, tire life)', completed: false, notes: '', photos: [] }
+          ]
+        }
+      ];
+    } 
+    
+    // Post-race specific inspections (default)
+    else {
+      return [
+        safetyEquipment,
+        vehicleSafetySystems,
+        {
+          id: 3, 
+          title: 'Chassis & Exterior', 
+          tasks: [
+            { id: 'task3-1', text: 'Bodywork integrity (mounting points, damage, fasteners)', completed: false, notes: '', photos: [] },
+            { id: 'task3-2', text: 'Aerodynamic components (wings, splitters, diffusers, damage)', completed: false, notes: '', photos: [] },
+            { id: 'task3-3', text: 'Door/hood/trunk latches (security, functionality)', completed: false, notes: '', photos: [] },
+            { id: 'task3-4', text: 'Competition number & required decals (visibility, placement)', completed: false, notes: '', photos: [] },
+            { id: 'task3-5', text: 'Vehicle weight (minimum weight compliance, ballast mounting)', completed: false, notes: '', photos: [] }
+          ]
+        },
+        {
+          id: 4, 
+          title: 'Suspension & Steering', 
+          tasks: [
+            { id: 'task4-1', text: 'Suspension components (cracks, bends, play in joints)', completed: false, notes: '', photos: [] },
+            { id: 'task4-2', text: 'Shock absorbers/springs (leaks, mounting, travel)', completed: false, notes: '', photos: [] },
+            { id: 'task4-3', text: 'Steering components (rack, arms, tie-rods, excessive play)', completed: false, notes: '', photos: [] },
+            { id: 'task4-4', text: 'Wheel bearings (excessive play, noise, heat)', completed: false, notes: '', photos: [] },
+            { id: 'task4-5', text: 'Ride height (minimum compliance, vehicle attitude)', completed: false, notes: '', photos: [] }
+          ]
+        },
+        {
+          id: 5, 
+          title: 'Braking System', 
+          tasks: [
+            { id: 'task5-1', text: 'Brake pads/discs (thickness, wear pattern, cracks)', completed: false, notes: '', photos: [] },
+            { id: 'task5-2', text: 'Brake lines & hoses (leaks, chafing, mounting)', completed: false, notes: '', photos: [] },
+            { id: 'task5-3', text: 'Brake calipers (mounting, piston operation, pad retaining pins)', completed: false, notes: '', photos: [] },
+            { id: 'task5-4', text: 'Brake fluid (level, condition, boiling point)', completed: false, notes: '', photos: [] },
+            { id: 'task5-5', text: 'Brake balance adjustment (bias valve, proportioning)', completed: false, notes: '', photos: [] }
+          ]
+        },
+        {
+          id: 6, 
+          title: 'Wheels & Tires', 
+          tasks: [
+            { id: 'task6-1', text: 'Wheels (damage, cracks, valve stems, balance weights)', completed: false, notes: '', photos: [] },
+            { id: 'task6-2', text: 'Wheel nuts/studs (torque, thread condition, locking method)', completed: false, notes: '', photos: [] },
+            { id: 'task6-3', text: 'Tire specification (correct compound, size, direction)', completed: false, notes: '', photos: [] },
+            { id: 'task6-4', text: 'Tire condition (cuts, punctures, flat spots, blistering)', completed: false, notes: '', photos: [] },
+            { id: 'task6-5', text: 'Tire pressures (hot/cold measurements, adjustments)', completed: false, notes: '', photos: [] }
+          ]
+        },
+        {
+          id: 7, 
+          title: 'Drivetrain & Transmission', 
+          tasks: [
+            { id: 'task7-1', text: 'Clutch (operation, free play, fluid leaks)', completed: false, notes: '', photos: [] },
+            { id: 'task7-2', text: 'Gearbox (operation, mounting, leaks)', completed: false, notes: '', photos: [] },
+            { id: 'task7-3', text: 'Driveshaft/axles (CV boots, play, mounting)', completed: false, notes: '', photos: [] },
+            { id: 'task7-4', text: 'Differential (mounting, operation, leaks)', completed: false, notes: '', photos: [] },
+            { id: 'task7-5', text: 'Transmission & differential fluid (level, condition)', completed: false, notes: '', photos: [] }
+          ]
+        },
+        {
+          id: 8, 
+          title: 'Engine & Cooling', 
+          tasks: [
+            { id: 'task8-1', text: 'Engine bay inspection (leaks, mounting, belt condition)', completed: false, notes: '', photos: [] },
+            { id: 'task8-2', text: 'Oil level & condition (contamination, pressure)', completed: false, notes: '', photos: [] },
+            { id: 'task8-3', text: 'Cooling system (radiator, hoses, cap, coolant level)', completed: false, notes: '', photos: [] },
+            { id: 'task8-4', text: 'Air intake system (filter, ducting, airbox)', completed: false, notes: '', photos: [] },
+            { id: 'task8-5', text: 'Exhaust system (mounting, leaks, silencer)', completed: false, notes: '', photos: [] }
+          ]
+        },
+        {
+          id: 9, 
+          title: 'Fuel System', 
+          tasks: [
+            { id: 'task9-1', text: 'Fuel tank/cell (FIA certification, mounting, date validation)', completed: false, notes: '', photos: [] },
+            { id: 'task9-2', text: 'Fuel lines & connections (high-pressure fittings, routing)', completed: false, notes: '', photos: [] },
+            { id: 'task9-3', text: 'Fuel pump & filter (operation, mounting)', completed: false, notes: '', photos: [] },
+            { id: 'task9-4', text: 'Fuel sample port (accessibility, functionality)', completed: false, notes: '', photos: [] },
+            { id: 'task9-5', text: 'Fuel level & type (correct specification, contamination)', completed: false, notes: '', photos: [] }
+          ]
+        },
+        {
+          id: 10, 
+          title: 'Electrical System', 
+          tasks: [
+            { id: 'task10-1', text: 'Battery (mounting, terminal protection, charging)', completed: false, notes: '', photos: [] },
+            { id: 'task10-2', text: 'Wiring harness (chafing, proper routing, connections)', completed: false, notes: '', photos: [] },
+            { id: 'task10-3', text: 'ECU & data systems (mounting, programming, sealing)', completed: false, notes: '', photos: [] },
+            { id: 'task10-4', text: 'Lighting systems (headlights, brake lights, rain light)', completed: false, notes: '', photos: [] },
+            { id: 'task10-5', text: 'Sensors & actuators (functionality, calibration)', completed: false, notes: '', photos: [] }
+          ]
+        },
+        {
+          id: 11, 
+          title: 'Cockpit & Controls', 
+          tasks: [
+            { id: 'task11-1', text: 'Steering wheel (quick release, buttons, grips)', completed: false, notes: '', photos: [] },
+            { id: 'task11-2', text: 'Pedals (operation, adjustment, mounting)', completed: false, notes: '', photos: [] },
+            { id: 'task11-3', text: 'Dashboard/instruments (functionality, visibility)', completed: false, notes: '', photos: [] },
+            { id: 'task11-4', text: 'Interior panels & trim (mounting, sharp edges)', completed: false, notes: '', photos: [] },
+            { id: 'task11-5', text: 'Camera/timing systems (mounting, power supply)', completed: false, notes: '', photos: [] }
+          ]
+        },
+        {
+          id: 12, 
+          title: 'Technical Compliance', 
+          tasks: [
+            { id: 'task12-1', text: 'Scrutineering seals & markings (present, unbroken)', completed: false, notes: '', photos: [] },
+            { id: 'task12-2', text: 'Homologation papers/technical passport (current, matching)', completed: false, notes: '', photos: [] },
+            { id: 'task12-3', text: 'Restrictor/BoP compliance (size, sealing)', completed: false, notes: '', photos: [] },
+            { id: 'task12-4', text: 'Noise test compliance (db level, measurement)', completed: false, notes: '', photos: [] },
+            { id: 'task12-5', text: 'Data logging retrieval (files, parameters)', completed: false, notes: '', photos: [] }
+          ]
+        }
+      ];
+    }
+  };
 
   // Student information
   const defaultStudentInfo = {
@@ -99,16 +292,22 @@ const RaceInspectionApp = () => {
     raceEvent: '',
     carClass: '',
     teamName: '',
-    scrutineerName: ''
+    scrutineerName: '',
+    inspectionType: 'post-race' // Default to post-race inspection
   };
 
   // State variables
-  const [checklist, setChecklist] = useState(defaultChecklist);
+  const [checklist, setChecklist] = useState([]);
   const [studentInfo, setStudentInfo] = useState(defaultStudentInfo);
   const [activeCamera, setActiveCamera] = useState(null);
   const [currentImage, setCurrentImage] = useState(null);
   const videoRef = useRef(null);
   const mediaStreamRef = useRef(null);
+
+  // Initialize checklist based on inspection type
+  useEffect(() => {
+    setChecklist(generateChecklist(studentInfo.inspectionType));
+  }, []);
 
   // Load from localStorage on initial render
   useEffect(() => {
@@ -185,12 +384,21 @@ const RaceInspectionApp = () => {
     );
   };
 
-  // Handle student info change
+  // Handle student info change and update checklist if inspection type changes
   const updateStudentInfo = (field, value) => {
-    setStudentInfo(prev => ({
-      ...prev,
-      [field]: value
-    }));
+    setStudentInfo(prev => {
+      const updatedInfo = {
+        ...prev,
+        [field]: value
+      };
+      
+      // If inspection type changed, update the checklist
+      if (field === 'inspectionType' && value !== prev.inspectionType) {
+        setChecklist(generateChecklist(value));
+      }
+      
+      return updatedInfo;
+    });
   };
 
   // Camera functions
@@ -318,11 +526,16 @@ const RaceInspectionApp = () => {
 
   // Generate and download report
   const generateReport = () => {
+    // Get the appropriate inspection type name
+    const inspectionTypeName = 
+      studentInfo.inspectionType === 'pre-race' ? 'Pre-Race' :
+      studentInfo.inspectionType === 'during-race' ? 'During-Race' : 'Post-Race';
+    
     // Create a styled HTML document for the report
     let reportContent = `
       <html>
       <head>
-        <title>Post-Race Inspection Report</title>
+        <title>${inspectionTypeName} Inspection Report</title>
         <style>
           body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
           h1 { color: #333; text-align: center; }
@@ -342,10 +555,15 @@ const RaceInspectionApp = () => {
           .progress-fill { height: 100%; background-color: #4caf50; border-radius: 10px; }
           .signature-area { margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; }
           .signature-line { margin-top: 50px; border-top: 1px solid #000; width: 300px; }
+          .inspection-type { background-color: #335; color: white; padding: 10px; text-align: center; margin-bottom: 20px; border-radius: 5px; }
         </style>
       </head>
       <body>
-        <h1>Post-Race Inspection Report</h1>
+        <h1>${inspectionTypeName} Inspection Report</h1>
+        
+        <div class="inspection-type">
+          ${inspectionTypeName} Inspection
+        </div>
         
         <div class="header-info">
           <div><label>Student Name:</label> ${studentInfo.name || 'Not provided'}</div>
@@ -431,7 +649,11 @@ const RaceInspectionApp = () => {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `inspection-report-${studentInfo.name ? studentInfo.name.replace(/\s+/g, '-') : 'unnamed'}-${new Date().toISOString().split('T')[0]}.html`;
+    
+    // Include inspection type in the filename
+    const inspectionTypeShort = studentInfo.inspectionType.replace('-', '');
+    a.download = `${inspectionTypeShort}-inspection-report-${studentInfo.name ? studentInfo.name.replace(/\s+/g, '-') : 'unnamed'}-${new Date().toISOString().split('T')[0]}.html`;
+    
     document.body.appendChild(a);
     a.click();
     
@@ -456,7 +678,11 @@ const RaceInspectionApp = () => {
     <div className="flex flex-col min-h-screen bg-gray-50">
       {/* Header */}
       <header className="bg-blue-700 text-white p-4 shadow-md">
-        <h1 className="text-2xl font-bold text-center">Post-Race Inspection Checklist</h1>
+        <h1 className="text-2xl font-bold text-center mb-2">
+          {studentInfo.inspectionType === 'pre-race' ? 'Pre-Race' : 
+           studentInfo.inspectionType === 'during-race' ? 'During-Race' : 
+           'Post-Race'} Inspection Checklist
+        </h1>
         <div className="mt-2 bg-blue-600 rounded-full h-6 overflow-hidden">
           <div 
             className="bg-green-400 h-full rounded-full transition-all duration-500 ease-in-out" 
@@ -522,14 +748,16 @@ const RaceInspectionApp = () => {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Car Class</label>
-              <input
-                type="text"
-                value={studentInfo.carClass}
-                onChange={(e) => updateStudentInfo('carClass', e.target.value)}
+              <label className="block text-sm font-medium text-gray-700 mb-1">Inspection Type</label>
+              <select
+                value={studentInfo.inspectionType}
+                onChange={(e) => updateStudentInfo('inspectionType', e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                placeholder="Enter car class"
-              />
+              >
+                <option value="pre-race">Pre-Race Inspection</option>
+                <option value="during-race">During-Race Inspection</option>
+                <option value="post-race">Post-Race Inspection</option>
+              </select>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Team Name</label>
