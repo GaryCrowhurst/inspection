@@ -1361,272 +1361,884 @@
             </div>
         </div>
         
-        <!-- Post-Race Tab -->
-        <div id="post-race" class="tab-content">
-            <h2 class="section-title">Post-Race Inspection</h2>
-            
-            <div class="progress-container">
-                <p>Inspection Progress: <span id="post-race-progress">0%</span></p>
-                <div class="progress-bar">
-                    <div class="progress-value" id="post-race-progress-bar" style="width: 0%"></div>
-                </div>
+<!-- Post-Race Tab -->
+<div id="post-race" class="tab-content">
+    <h2 class="section-title">Post-Race Inspection</h2>
+    
+    <div class="progress-container">
+        <p>Inspection Progress: <span id="post-race-progress">0%</span></p>
+        <div class="progress-bar">
+            <div class="progress-value" id="post-race-progress-bar" style="width: 0%"></div>
+        </div>
+    </div>
+    
+    <div id="post-race-checklist">
+        <!-- Overall Condition -->
+        <div class="checklist-item" data-category="post-race" data-section="overall-condition">
+            <div class="checklist-header">
+                <div class="checklist-title">Overall Vehicle Condition</div>
+                <div class="checklist-status status-pending">Pending</div>
             </div>
-            
-            <div id="post-race-checklist">
-                <!-- Overall Condition -->
-                <div class="checklist-item" data-category="post-race" data-section="overall-condition">
-                    <div class="checklist-header">
-                        <div class="checklist-title">Overall Vehicle Condition</div>
-                        <div class="checklist-status status-pending">Pending</div>
-                    </div>
-                    <div class="checklist-content">
-                        <div class="guidance-text">
-                            <p>Perform a complete assessment of the vehicle's condition after the race. Note any damage, excessive wear, or failures that occurred during the race.</p>
+            <div class="checklist-content">
+                <div class="guidance-text">
+                    <p>Perform a complete assessment of the vehicle's condition after the race. Note any damage, excessive wear, or failures that occurred during the race.</p>
+                </div>
+                
+                <div class="form-group">
+                    <label>Specific Items</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="overall-bodywork" name="overall-condition-checks" value="bodywork">
+                            <label for="overall-bodywork">Bodywork, fairings, wings, covers and hatches secure</label>
                         </div>
-                        
-                        <div class="form-group">
-                            <label>Status</label>
-                            <div class="radio-group">
-                                <div class="radio-option">
-                                    <input type="radio" name="overall-condition-status" id="overall-condition-pass" value="pass">
-                                    <label for="overall-condition-pass">Pass</label>
-                                </div>
-                                <div class="radio-option">
-                                    <input type="radio" name="overall-condition-status" id="overall-condition-fail" value="fail">
-                                    <label for="overall-condition-fail">Fail</label>
-                                </div>
-                                <div class="radio-option">
-                                    <input type="radio" name="overall-condition-status" id="overall-condition-warning" value="warning">
-                                    <label for="overall-condition-warning">Warning</label>
-                                </div>
-                            </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="overall-chassis" name="overall-condition-checks" value="chassis">
+                            <label for="overall-chassis">Chassis integrity intact with no structural damage</label>
                         </div>
-                        
-                        <div class="form-group">
-                            <label for="overall-condition-notes">Notes</label>
-                            <textarea id="overall-condition-notes" rows="3" placeholder="Enter detailed notes about overall vehicle condition inspection"></textarea>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="overall-leaks" name="overall-condition-checks" value="leaks">
+                            <label for="overall-leaks">No fluid leaks visible under the vehicle</label>
                         </div>
-                        
-                        <div class="photo-container">
-                            <label>Photo Evidence</label>
-                            <div class="photo-preview" id="overall-condition-photo-preview">
-                                <i class="fas fa-camera"></i>
-                            </div>
-                            <button class="btn" id="overall-condition-photo-btn">
-                                <i class="fas fa-camera"></i> Take Photo
-                            </button>
-                            <input type="file" id="overall-condition-photo-input" accept="image/*" capture="environment" style="display: none">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="overall-electrical" name="overall-condition-checks" value="electrical">
+                            <label for="overall-electrical">No damaged wiring or electrical components</label>
                         </div>
-                        
-                        <button class="btn btn-success" data-save="overall-condition">Save Section</button>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="overall-debris" name="overall-condition-checks" value="debris">
+                            <label for="overall-debris">Vehicle cleaned of debris and track materials</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="overall-safety" name="overall-condition-checks" value="safety">
+                            <label for="overall-safety">Safety equipment intact and undamaged</label>
+                        </div>
                     </div>
                 </div>
                 
-                <!-- Tyre Wear Analysis -->
-                <div class="checklist-item" data-category="post-race" data-section="tyre-wear">
-                    <div class="checklist-header">
-                        <div class="checklist-title">Tyre Wear Analysis</div>
-                        <div class="checklist-status status-pending">Pending</div>
-                    </div>
-                    <div class="checklist-content">
-                        <div class="guidance-text">
-                            <p>Analyze tyre wear patterns and overall tyre condition after the race. Document wear measurements, temperature ranges during operation, and any abnormal wear patterns.</p>
+                <div class="form-group">
+                    <label>Status</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" name="overall-condition-status" id="overall-condition-pass" value="pass">
+                            <label for="overall-condition-pass">Pass</label>
                         </div>
-                        
-                        <div class="form-group">
-                            <label>Status</label>
-                            <div class="radio-group">
-                                <div class="radio-option">
-                                    <input type="radio" name="tyre-wear-status" id="tyre-wear-pass" value="pass">
-                                    <label for="tyre-wear-pass">Pass</label>
-                                </div>
-                                <div class="radio-option">
-                                    <input type="radio" name="tyre-wear-status" id="tyre-wear-fail" value="fail">
-                                    <label for="tyre-wear-fail">Fail</label>
-                                </div>
-                                <div class="radio-option">
-                                    <input type="radio" name="tyre-wear-status" id="tyre-wear-warning" value="warning">
-                                    <label for="tyre-wear-warning">Warning</label>
-                                </div>
-                            </div>
+                        <div class="radio-option">
+                            <input type="radio" name="overall-condition-status" id="overall-condition-fail" value="fail">
+                            <label for="overall-condition-fail">Fail</label>
                         </div>
-                        
-                        <div class="form-group">
-                            <label for="tyre-wear-notes">Notes</label>
-                            <textarea id="tyre-wear-notes" rows="3" placeholder="Enter detailed notes about tyre wear analysis"></textarea>
+                        <div class="radio-option">
+                            <input type="radio" name="overall-condition-status" id="overall-condition-warning" value="warning">
+                            <label for="overall-condition-warning">Warning</label>
                         </div>
-                        
-                        <div class="photo-container">
-                            <label>Photo Evidence</label>
-                            <div class="photo-preview" id="tyre-wear-photo-preview">
-                                <i class="fas fa-camera"></i>
-                            </div>
-                            <button class="btn" id="tyre-wear-photo-btn">
-                                <i class="fas fa-camera"></i> Take Photo
-                            </button>
-                            <input type="file" id="tyre-wear-photo-input" accept="image/*" capture="environment" style="display: none">
-                        </div>
-                        
-                        <button class="btn btn-success" data-save="tyre-wear">Save Section</button>
                     </div>
                 </div>
                 
-                <!-- Brake System Analysis -->
-                <div class="checklist-item" data-category="post-race" data-section="brake-analysis">
-                    <div class="checklist-header">
-                        <div class="checklist-title">Brake System Analysis</div>
-                        <div class="checklist-status status-pending">Pending</div>
-                    </div>
-                    <div class="checklist-content">
-                        <div class="guidance-text">
-                            <p>Evaluate brake pad and disc wear after the race. Document measurements, temperature ranges during operation, and any signs of overheating or failure.</p>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Status</label>
-                            <div class="radio-group">
-                                <div class="radio-option">
-                                    <input type="radio" name="brake-analysis-status" id="brake-analysis-pass" value="pass">
-                                    <label for="brake-analysis-pass">Pass</label>
-                                </div>
-                                <div class="radio-option">
-                                    <input type="radio" name="brake-analysis-status" id="brake-analysis-fail" value="fail">
-                                    <label for="brake-analysis-fail">Fail</label>
-                                </div>
-                                <div class="radio-option">
-                                    <input type="radio" name="brake-analysis-status" id="brake-analysis-warning" value="warning">
-                                    <label for="brake-analysis-warning">Warning</label>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="brake-analysis-notes">Notes</label>
-                            <textarea id="brake-analysis-notes" rows="3" placeholder="Enter detailed notes about brake system analysis"></textarea>
-                        </div>
-                        
-                        <div class="photo-container">
-                            <label>Photo Evidence</label>
-                            <div class="photo-preview" id="brake-analysis-photo-preview">
-                                <i class="fas fa-camera"></i>
-                            </div>
-                            <button class="btn" id="brake-analysis-photo-btn">
-                                <i class="fas fa-camera"></i> Take Photo
-                            </button>
-                            <input type="file" id="brake-analysis-photo-input" accept="image/*" capture="environment" style="display: none">
-                        </div>
-                        
-                        <button class="btn btn-success" data-save="brake-analysis">Save Section</button>
-                    </div>
+                <div class="form-group">
+                    <label for="overall-condition-notes">Notes</label>
+                    <textarea id="overall-condition-notes" rows="3" placeholder="Enter detailed notes about overall vehicle condition inspection"></textarea>
                 </div>
                 
-                <!-- Drivetrain Inspection -->
-                <div class="checklist-item" data-category="post-race" data-section="drivetrain">
-                    <div class="checklist-header">
-                        <div class="checklist-title">Drivetrain Inspection</div>
-                        <div class="checklist-status status-pending">Pending</div>
+                <div class="photo-container">
+                    <label>Photo Evidence</label>
+                    <div class="photo-preview" id="overall-condition-photo-preview">
+                        <i class="fas fa-camera"></i>
                     </div>
-                    <div class="checklist-content">
-                        <div class="guidance-text">
-                            <p>Inspect the drivetrain components for wear, damage, or failures. This includes transmission, differential, axles, and CV joints if applicable.</p>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Status</label>
-                            <div class="radio-group">
-                                <div class="radio-option">
-                                    <input type="radio" name="drivetrain-status" id="drivetrain-pass" value="pass">
-                                    <label for="drivetrain-pass">Pass</label>
-                                </div>
-                                <div class="radio-option">
-                                    <input type="radio" name="drivetrain-status" id="drivetrain-fail" value="fail">
-                                    <label for="drivetrain-fail">Fail</label>
-                                </div>
-                                <div class="radio-option">
-                                    <input type="radio" name="drivetrain-status" id="drivetrain-warning" value="warning">
-                                    <label for="drivetrain-warning">Warning</label>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="drivetrain-notes">Notes</label>
-                            <textarea id="drivetrain-notes" rows="3" placeholder="Enter detailed notes about drivetrain inspection"></textarea>
-                        </div>
-                        
-                        <div class="photo-container">
-                            <label>Photo Evidence</label>
-                            <div class="photo-preview" id="drivetrain-photo-preview">
-                                <i class="fas fa-camera"></i>
-                            </div>
-                            <button class="btn" id="drivetrain-photo-btn">
-                                <i class="fas fa-camera"></i> Take Photo
-                            </button>
-                            <input type="file" id="drivetrain-photo-input" accept="image/*" capture="environment" style="display: none">
-                        </div>
-                        
-                        <button class="btn btn-success" data-save="drivetrain">Save Section</button>
-                    </div>
-                </div>
-                
-                <!-- Engine Performance -->
-                <div class="checklist-item" data-category="post-race" data-section="engine-performance">
-                    <div class="checklist-header">
-                        <div class="checklist-title">Engine Performance Evaluation</div>
-                        <div class="checklist-status status-pending">Pending</div>
-                    </div>
-                    <div class="checklist-content">
-                        <div class="guidance-text">
-                            <p>Evaluate engine performance data and physical condition after the race. Check for any unusual noises, vibrations, or performance issues noted during the race.</p>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Status</label>
-                            <div class="radio-group">
-                                <div class="radio-option">
-                                    <input type="radio" name="engine-performance-status" id="engine-performance-pass" value="pass">
-                                    <label for="engine-performance-pass">Pass</label>
-                                </div>
-                                <div class="radio-option">
-                                    <input type="radio" name="engine-performance-status" id="engine-performance-fail" value="fail">
-                                    <label for="engine-performance-fail">Fail</label>
-                                </div>
-                                <div class="radio-option">
-                                    <input type="radio" name="engine-performance-status" id="engine-performance-warning" value="warning">
-                                    <label for="engine-performance-warning">Warning</label>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="engine-performance-notes">Notes</label>
-                            <textarea id="engine-performance-notes" rows="3" placeholder="Enter detailed notes about engine performance evaluation"></textarea>
-                        </div>
-                        
-                        <div class="photo-container">
-                            <label>Photo Evidence</label>
-                            <div class="photo-preview" id="engine-performance-photo-preview">
-                                <i class="fas fa-camera"></i>
-                            </div>
-                            <button class="btn" id="engine-performance-photo-btn">
-                                <i class="fas fa-camera"></i> Take Photo
-                            </button>
-                            <input type="file" id="engine-performance-photo-input" accept="image/*" capture="environment" style="display: none">
-                        </div>
-                        
-                        <button class="btn btn-success" data-save="engine-performance">Save Section</button>
-                    </div>
-                </div>
-                
-                <div class="action-buttons">
-                    <button class="btn" id="back-to-during-race">Back</button>
-                    <button class="btn btn-secondary" id="download-post-race-report">
-                        <i class="fas fa-download"></i> Download Phase Report
+                    <button class="btn" id="overall-condition-photo-btn">
+                        <i class="fas fa-camera"></i> Take Photo
                     </button>
-                    <button class="btn btn-success" id="next-to-report">Generate Report</button>
+                    <input type="file" id="overall-condition-photo-input" accept="image/*" capture="environment" style="display: none">
                 </div>
+                
+                <button class="btn btn-success" data-save="overall-condition">Save Section</button>
             </div>
         </div>
+        
+        <!-- Safety Systems -->
+        <div class="checklist-item" data-category="post-race" data-section="safety-systems">
+            <div class="checklist-header">
+                <div class="checklist-title">Safety Systems Check</div>
+                <div class="checklist-status status-pending">Pending</div>
+            </div>
+            <div class="checklist-content">
+                <div class="guidance-text">
+                    <p>Inspect all safety systems for proper functionality and condition after race completion. Check for any damage or issues that may have occurred during racing.</p>
+                </div>
+                
+                <div class="form-group">
+                    <label>Specific Items</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="safety-harness" name="safety-systems-checks" value="harness">
+                            <label for="safety-harness">Driver's harness/seat belts show no signs of damage</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="safety-fire" name="safety-systems-checks" value="fire">
+                            <label for="safety-fire">Fire extinguisher bottle full and system still armed</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="safety-seat" name="safety-systems-checks" value="seat">
+                            <label for="safety-seat">Driver's seat secure with no damage</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="safety-roll" name="safety-systems-checks" value="roll">
+                            <label for="safety-roll">Roll cage/safety cell intact with no damage</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="safety-cutoff" name="safety-systems-checks" value="cutoff">
+                            <label for="safety-cutoff">Emergency cutoff switches function correctly</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="safety-pads" name="safety-systems-checks" value="pads">
+                            <label for="safety-pads">Protective padding and barriers intact</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Status</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" name="safety-systems-status" id="safety-systems-pass" value="pass">
+                            <label for="safety-systems-pass">Pass</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="safety-systems-status" id="safety-systems-fail" value="fail">
+                            <label for="safety-systems-fail">Fail</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="safety-systems-status" id="safety-systems-warning" value="warning">
+                            <label for="safety-systems-warning">Warning</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="safety-systems-notes">Notes</label>
+                    <textarea id="safety-systems-notes" rows="3" placeholder="Enter detailed notes about safety systems"></textarea>
+                </div>
+                
+                <div class="photo-container">
+                    <label>Photo Evidence</label>
+                    <div class="photo-preview" id="safety-systems-photo-preview">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                    <button class="btn" id="safety-systems-photo-btn">
+                        <i class="fas fa-camera"></i> Take Photo
+                    </button>
+                    <input type="file" id="safety-systems-photo-input" accept="image/*" capture="environment" style="display: none">
+                </div>
+                
+                <button class="btn btn-success" data-save="safety-systems">Save Section</button>
+            </div>
+        </div>
+        
+        <!-- Critical Fasteners -->
+        <div class="checklist-item" data-category="post-race" data-section="critical-fasteners">
+            <div class="checklist-header">
+                <div class="checklist-title">Critical Fasteners</div>
+                <div class="checklist-status status-pending">Pending</div>
+            </div>
+            <div class="checklist-content">
+                <div class="guidance-text">
+                    <p>Check all critical fasteners with a torque wrench to verify proper torque settings are maintained after the race. Inspect for any loosening or damage.</p>
+                </div>
+                
+                <div class="form-group">
+                    <label>Specific Items</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="fasteners-wheel" name="critical-fasteners-checks" value="wheel">
+                            <label for="fasteners-wheel">Wheel nuts/bolts at correct torque with no loosening</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="fasteners-suspension" name="critical-fasteners-checks" value="suspension">
+                            <label for="fasteners-suspension">Suspension mounting fasteners secure and correctly torqued</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="fasteners-steering" name="critical-fasteners-checks" value="steering">
+                            <label for="fasteners-steering">Steering system fasteners secure with no loosening</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="fasteners-engine" name="critical-fasteners-checks" value="engine">
+                            <label for="fasteners-engine">Engine mounting fasteners secure</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="fasteners-brakes" name="critical-fasteners-checks" value="brakes">
+                            <label for="fasteners-brakes">Brake caliper and mounting fasteners secure</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="fasteners-safety" name="critical-fasteners-checks" value="safety">
+                            <label for="fasteners-safety">Safety equipment mounting fasteners secure</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Status</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" name="critical-fasteners-status" id="critical-fasteners-pass" value="pass">
+                            <label for="critical-fasteners-pass">Pass</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="critical-fasteners-status" id="critical-fasteners-fail" value="fail">
+                            <label for="critical-fasteners-fail">Fail</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="critical-fasteners-status" id="critical-fasteners-warning" value="warning">
+                            <label for="critical-fasteners-warning">Warning</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="critical-fasteners-notes">Notes</label>
+                    <textarea id="critical-fasteners-notes" rows="3" placeholder="Enter detailed notes about critical fasteners inspection"></textarea>
+                </div>
+                
+                <div class="photo-container">
+                    <label>Photo Evidence</label>
+                    <div class="photo-preview" id="critical-fasteners-photo-preview">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                    <button class="btn" id="critical-fasteners-photo-btn">
+                        <i class="fas fa-camera"></i> Take Photo
+                    </button>
+                    <input type="file" id="critical-fasteners-photo-input" accept="image/*" capture="environment" style="display: none">
+                </div>
+                
+                <button class="btn btn-success" data-save="critical-fasteners">Save Section</button>
+            </div>
+        </div>
+        
+        <!-- Tyre Wear Analysis -->
+        <div class="checklist-item" data-category="post-race" data-section="tyre-wear">
+            <div class="checklist-header">
+                <div class="checklist-title">Tyre Wear Analysis</div>
+                <div class="checklist-status status-pending">Pending</div>
+            </div>
+            <div class="checklist-content">
+                <div class="guidance-text">
+                    <p>Analyze tyre wear patterns and overall tyre condition after the race. Document wear measurements, temperature ranges during operation, and any abnormal wear patterns.</p>
+                </div>
+                
+                <div class="form-group">
+                    <label>Specific Items</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="tyre-wear-pattern" name="tyre-wear-checks" value="pattern">
+                            <label for="tyre-wear-pattern">Wear pattern is even across the tyre surface</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="tyre-wear-depth" name="tyre-wear-checks" value="depth">
+                            <label for="tyre-wear-depth">Tread depth measurements recorded for all tyres</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="tyre-wear-damage" name="tyre-wear-checks" value="damage">
+                            <label for="tyre-wear-damage">No cuts, blisters, or sidewall damage present</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="tyre-wear-graining" name="tyre-wear-checks" value="graining">
+                            <label for="tyre-wear-graining">Graining and marbling levels documented</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="tyre-wear-pressure" name="tyre-wear-checks" value="pressure">
+                            <label for="tyre-wear-pressure">Post-race pressures recorded and analyzed</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="tyre-wear-temperature" name="tyre-wear-checks" value="temperature">
+                            <label for="tyre-wear-temperature">Operating temperature range documented</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Status</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" name="tyre-wear-status" id="tyre-wear-pass" value="pass">
+                            <label for="tyre-wear-pass">Pass</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="tyre-wear-status" id="tyre-wear-fail" value="fail">
+                            <label for="tyre-wear-fail">Fail</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="tyre-wear-status" id="tyre-wear-warning" value="warning">
+                            <label for="tyre-wear-warning">Warning</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="tyre-wear-notes">Notes</label>
+                    <textarea id="tyre-wear-notes" rows="3" placeholder="Enter detailed notes about tyre wear analysis"></textarea>
+                </div>
+                
+                <div class="photo-container">
+                    <label>Photo Evidence</label>
+                    <div class="photo-preview" id="tyre-wear-photo-preview">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                    <button class="btn" id="tyre-wear-photo-btn">
+                        <i class="fas fa-camera"></i> Take Photo
+                    </button>
+                    <input type="file" id="tyre-wear-photo-input" accept="image/*" capture="environment" style="display: none">
+                </div>
+                
+                <button class="btn btn-success" data-save="tyre-wear">Save Section</button>
+            </div>
+        </div>
+        
+        <!-- Brake System Analysis -->
+        <div class="checklist-item" data-category="post-race" data-section="brake-analysis">
+            <div class="checklist-header">
+                <div class="checklist-title">Brake System Analysis</div>
+                <div class="checklist-status status-pending">Pending</div>
+            </div>
+            <div class="checklist-content">
+                <div class="guidance-text">
+                    <p>Evaluate brake pad and disc wear after the race. Document measurements, temperature ranges during operation, and any signs of overheating or failure.</p>
+                </div>
+                
+                <div class="form-group">
+                    <label>Specific Items</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="brake-analysis-pad" name="brake-analysis-checks" value="pad">
+                            <label for="brake-analysis-pad">Brake pad thickness measured and recorded</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="brake-analysis-disc" name="brake-analysis-checks" value="disc">
+                            <label for="brake-analysis-disc">Brake disc thickness and condition assessed</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="brake-analysis-caliper" name="brake-analysis-checks" value="caliper">
+                            <label for="brake-analysis-caliper">Caliper condition checked with no fluid leaks</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="brake-analysis-fluid" name="brake-analysis-checks" value="fluid">
+                            <label for="brake-analysis-fluid">Brake fluid level and condition checked</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="brake-analysis-heat" name="brake-analysis-checks" value="heat">
+                            <label for="brake-analysis-heat">Heat discoloration/cracking inspected</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="brake-analysis-balance" name="brake-analysis-checks" value="balance">
+                            <label for="brake-analysis-balance">Brake balance verified and documented</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Status</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" name="brake-analysis-status" id="brake-analysis-pass" value="pass">
+                            <label for="brake-analysis-pass">Pass</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="brake-analysis-status" id="brake-analysis-fail" value="fail">
+                            <label for="brake-analysis-fail">Fail</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="brake-analysis-status" id="brake-analysis-warning" value="warning">
+                            <label for="brake-analysis-warning">Warning</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="brake-analysis-notes">Notes</label>
+                    <textarea id="brake-analysis-notes" rows="3" placeholder="Enter detailed notes about brake system analysis"></textarea>
+                </div>
+                
+                <div class="photo-container">
+                    <label>Photo Evidence</label>
+                    <div class="photo-preview" id="brake-analysis-photo-preview">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                    <button class="btn" id="brake-analysis-photo-btn">
+                        <i class="fas fa-camera"></i> Take Photo
+                    </button>
+                    <input type="file" id="brake-analysis-photo-input" accept="image/*" capture="environment" style="display: none">
+                </div>
+                
+                <button class="btn btn-success" data-save="brake-analysis">Save Section</button>
+            </div>
+        </div>
+        
+        <!-- Suspension Analysis -->
+        <div class="checklist-item" data-category="post-race" data-section="suspension-analysis">
+            <div class="checklist-header">
+                <div class="checklist-title">Suspension Analysis</div>
+                <div class="checklist-status status-pending">Pending</div>
+            </div>
+            <div class="checklist-content">
+                <div class="guidance-text">
+                    <p>Thoroughly inspect suspension components after race completion. Check for any wear, damage, or alignment issues that may have occurred during racing.</p>
+                </div>
+                
+                <div class="form-group">
+                    <label>Specific Items</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="suspension-analysis-damper" name="suspension-analysis-checks" value="damper">
+                            <label for="suspension-analysis-damper">Damper condition and gas pressure checked</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="suspension-analysis-spring" name="suspension-analysis-checks" value="spring">
+                            <label for="suspension-analysis-spring">Springs inspected for damage or fatigue</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="suspension-analysis-arm" name="suspension-analysis-checks" value="arm">
+                            <label for="suspension-analysis-arm">Control arms/wishbones checked for bending or damage</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="suspension-analysis-bearing" name="suspension-analysis-checks" value="bearing">
+                            <label for="suspension-analysis-bearing">Spherical bearings and wheel bearings checked for play</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="suspension-analysis-geometry" name="suspension-analysis-checks" value="geometry">
+                            <label for="suspension-analysis-geometry">Suspension geometry measurements recorded</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="suspension-analysis-bushing" name="suspension-analysis-checks" value="bushing">
+                            <label for="suspension-analysis-bushing">Bushings and mounts inspected for wear or failure</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Status</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" name="suspension-analysis-status" id="suspension-analysis-pass" value="pass">
+                            <label for="suspension-analysis-pass">Pass</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="suspension-analysis-status" id="suspension-analysis-fail" value="fail">
+                            <label for="suspension-analysis-fail">Fail</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="suspension-analysis-status" id="suspension-analysis-warning" value="warning">
+                            <label for="suspension-analysis-warning">Warning</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="suspension-analysis-notes">Notes</label>
+                    <textarea id="suspension-analysis-notes" rows="3" placeholder="Enter detailed notes about suspension analysis"></textarea>
+                </div>
+                
+                <div class="photo-container">
+                    <label>Photo Evidence</label>
+                    <div class="photo-preview" id="suspension-analysis-photo-preview">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                    <button class="btn" id="suspension-analysis-photo-btn">
+                        <i class="fas fa-camera"></i> Take Photo
+                    </button>
+                    <input type="file" id="suspension-analysis-photo-input" accept="image/*" capture="environment" style="display: none">
+                </div>
+                
+                <button class="btn btn-success" data-save="suspension-analysis">Save Section</button>
+            </div>
+        </div>
+        
+        <!-- Drivetrain Inspection -->
+        <div class="checklist-item" data-category="post-race" data-section="drivetrain">
+            <div class="checklist-header">
+                <div class="checklist-title">Drivetrain Inspection</div>
+                <div class="checklist-status status-pending">Pending</div>
+            </div>
+            <div class="checklist-content">
+                <div class="guidance-text">
+                    <p>Inspect the drivetrain components for wear, damage, or failures. This includes transmission, differential, axles, and CV joints if applicable.</p>
+                </div>
+                
+                <div class="form-group">
+                    <label>Specific Items</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="drivetrain-gearbox" name="drivetrain-checks" value="gearbox">
+                            <label for="drivetrain-gearbox">Gearbox operation checked for all gears</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="drivetrain-clutch" name="drivetrain-checks" value="clutch">
+                            <label for="drivetrain-clutch">Clutch operation and clearance checked</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="drivetrain-differential" name="drivetrain-checks" value="differential">
+                            <label for="drivetrain-differential">Differential operation and fluid condition verified</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="drivetrain-shaft" name="drivetrain-checks" value="shaft">
+                            <label for="drivetrain-shaft">Driveshaft and CV joints checked for damage</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="drivetrain-fluid" name="drivetrain-checks" value="fluid">
+                            <label for="drivetrain-fluid">Transmission fluid level and condition checked</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="drivetrain-noise" name="drivetrain-checks" value="noise">
+                            <label for="drivetrain-noise">Unusual noises or vibrations documented</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Status</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" name="drivetrain-status" id="drivetrain-pass" value="pass">
+                            <label for="drivetrain-pass">Pass</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="drivetrain-status" id="drivetrain-fail" value="fail">
+                            <label for="drivetrain-fail">Fail</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="drivetrain-status" id="drivetrain-warning" value="warning">
+                            <label for="drivetrain-warning">Warning</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="drivetrain-notes">Notes</label>
+                    <textarea id="drivetrain-notes" rows="3" placeholder="Enter detailed notes about drivetrain inspection"></textarea>
+                </div>
+                
+                <div class="photo-container">
+                    <label>Photo Evidence</label>
+                    <div class="photo-preview" id="drivetrain-photo-preview">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                    <button class="btn" id="drivetrain-photo-btn">
+                        <i class="fas fa-camera"></i> Take Photo
+                    </button>
+                    <input type="file" id="drivetrain-photo-input" accept="image/*" capture="environment" style="display: none">
+                </div>
+                
+                <button class="btn btn-success" data-save="drivetrain">Save Section</button>
+            </div>
+        </div>
+        
+        <!-- Engine Performance -->
+        <div class="checklist-item" data-category="post-race" data-section="engine-performance">
+            <div class="checklist-header">
+                <div class="checklist-title">Engine Performance Evaluation</div>
+                <div class="checklist-status status-pending">Pending</div>
+            </div>
+            <div class="checklist-content">
+                <div class="guidance-text">
+                    <p>Evaluate engine performance data and physical condition after the race. Check for any unusual noises, vibrations, or performance issues noted during the race.</p>
+                </div>
+                
+                <div class="form-group">
+                    <label>Specific Items</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="engine-performance-oil" name="engine-performance-checks" value="oil">
+                            <label for="engine-performance-oil">Engine oil level and pressure checked</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="engine-performance-coolant" name="engine-performance-checks" value="coolant">
+                            <label for="engine-performance-coolant">Coolant level and temperature within specifications</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="engine-performance-throttle" name="engine-performance-checks" value="throttle">
+                            <label for="engine-performance-throttle">Throttle operation reaches 100% opening</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="engine-performance-belts" name="engine-performance-checks" value="belts">
+                            <label for="engine-performance-belts">Drive belts show no excessive wear or damage</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="engine-performance-exhaust" name="engine-performance-checks" value="exhaust">
+                            <label for="engine-performance-exhaust">Exhaust system intact with no leaks</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="engine-performance-intake" name="engine-performance-checks" value="intake">
+                            <label for="engine-performance-intake">Air intake system clean and undamaged</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="engine-performance-data" name="engine-performance-checks" value="data">
+                            <label for="engine-performance-data">Engine performance data collected and analyzed</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="engine-performance-ecu" name="engine-performance-checks" value="ecu">
+                            <label for="engine-performance-ecu">ECU data and error codes checked</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Status</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" name="engine-performance-status" id="engine-performance-pass" value="pass">
+                            <label for="engine-performance-pass">Pass</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="engine-performance-status" id="engine-performance-fail" value="fail">
+                            <label for="engine-performance-fail">Fail</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="engine-performance-status" id="engine-performance-warning" value="warning">
+                            <label for="engine-performance-warning">Warning</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="engine-performance-notes">Notes</label>
+                    <textarea id="engine-performance-notes" rows="3" placeholder="Enter detailed notes about engine performance evaluation"></textarea>
+                </div>
+                
+                <div class="photo-container">
+                    <label>Photo Evidence</label>
+                    <div class="photo-preview" id="engine-performance-photo-preview">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                    <button class="btn" id="engine-performance-photo-btn">
+                        <i class="fas fa-camera"></i> Take Photo
+                    </button>
+                    <input type="file" id="engine-performance-photo-input" accept="image/*" capture="environment" style="display: none">
+                </div>
+                
+                <button class="btn btn-success" data-save="engine-performance">Save Section</button>
+            </div>
+        </div>
+        
+        <!-- Fluid Analysis -->
+        <div class="checklist-item" data-category="post-race" data-section="fluid-analysis">
+            <div class="checklist-header">
+                <div class="checklist-title">Fluid Analysis</div>
+                <div class="checklist-status status-pending">Pending</div>
+            </div>
+            <div class="checklist-content">
+                <div class="guidance-text">
+                    <p>Check all vehicle fluids for level, condition, and contamination. Document any fluid consumption during the race and collect samples if required for further analysis.</p>
+                </div>
+                
+                <div class="form-group">
+                    <label>Specific Items</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="fluid-analysis-engine" name="fluid-analysis-checks" value="engine">
+                            <label for="fluid-analysis-engine">Engine oil condition and level checked</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="fluid-analysis-coolant" name="fluid-analysis-checks" value="coolant">
+                            <label for="fluid-analysis-coolant">Coolant condition and level checked</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="fluid-analysis-brake" name="fluid-analysis-checks" value="brake">
+                            <label for="fluid-analysis-brake">Brake fluid condition and level checked</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="fluid-analysis-steering" name="fluid-analysis-checks" value="steering">
+                            <label for="fluid-analysis-steering">Power steering fluid condition and level checked</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="fluid-analysis-trans" name="fluid-analysis-checks" value="trans">
+                            <label for="fluid-analysis-trans">Transmission fluid condition and level checked</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="fluid-analysis-samples" name="fluid-analysis-checks" value="samples">
+                            <label for="fluid-analysis-samples">Fluid samples collected for laboratory analysis if required</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="fluid-analysis-consumption" name="fluid-analysis-checks" value="consumption">
+                            <label for="fluid-analysis-consumption">Fluid consumption rates documented</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Status</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" name="fluid-analysis-status" id="fluid-analysis-pass" value="pass">
+                            <label for="fluid-analysis-pass">Pass</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="fluid-analysis-status" id="fluid-analysis-fail" value="fail">
+                            <label for="fluid-analysis-fail">Fail</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="fluid-analysis-status" id="fluid-analysis-warning" value="warning">
+                            <label for="fluid-analysis-warning">Warning</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="fluid-analysis-notes">Notes</label>
+                    <textarea id="fluid-analysis-notes" rows="3" placeholder="Enter detailed notes about fluid analysis"></textarea>
+                </div>
+                
+                <div class="photo-container">
+                    <label>Photo Evidence</label>
+                    <div class="photo-preview" id="fluid-analysis-photo-preview">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                    <button class="btn" id="fluid-analysis-photo-btn">
+                        <i class="fas fa-camera"></i> Take Photo
+                    </button>
+                    <input type="file" id="fluid-analysis-photo-input" accept="image/*" capture="environment" style="display: none">
+                </div>
+                
+                <button class="btn btn-success" data-save="fluid-analysis">Save Section</button>
+            </div>
+        </div>
+        
+        <!-- Data Analysis -->
+        <div class="checklist-item" data-category="post-race" data-section="data-analysis">
+            <div class="checklist-header">
+                <div class="checklist-title">Data Acquisition Analysis</div>
+                <div class="checklist-status status-pending">Pending</div>
+            </div>
+            <div class="checklist-content">
+                <div class="guidance-text">
+                    <p>Review and analyze data acquisition information collected during the race. Document any performance anomalies, temperature excursions, or system warnings.</p>
+                </div>
+                
+                <div class="form-group">
+                    <label>Specific Items</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="data-analysis-download" name="data-analysis-checks" value="download">
+                            <label for="data-analysis-download">All race data downloaded and backed up</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="data-analysis-engine" name="data-analysis-checks" value="engine">
+                            <label for="data-analysis-engine">Engine performance data analyzed</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="data-analysis-temp" name="data-analysis-checks" value="temp">
+                            <label for="data-analysis-temp">Temperature data reviewed for any excursions</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="data-analysis-pressure" name="data-analysis-checks" value="pressure">
+                            <label for="data-analysis-pressure">Pressure data analyzed for abnormalities</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="data-analysis-events" name="data-analysis-checks" value="events">
+                            <label for="data-analysis-events">Event markers and warnings reviewed</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="data-analysis-sensors" name="data-analysis-checks" value="sensors">
+                            <label for="data-analysis-sensors">Sensor functionality verified</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="data-analysis-report" name="data-analysis-checks" value="report">
+                            <label for="data-analysis-report">Data analysis report prepared</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Status</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" name="data-analysis-status" id="data-analysis-pass" value="pass">
+                            <label for="data-analysis-pass">Pass</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="data-analysis-status" id="data-analysis-fail" value="fail">
+                            <label for="data-analysis-fail">Fail</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="data-analysis-status" id="data-analysis-warning" value="warning">
+                            <label for="data-analysis-warning">Warning</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="data-analysis-notes">Notes</label>
+                    <textarea id="data-analysis-notes" rows="3" placeholder="Enter detailed notes about data acquisition analysis"></textarea>
+                </div>
+                
+                <div class="photo-container">
+                    <label>Photo Evidence</label>
+                    <div class="photo-preview" id="data-analysis-photo-preview">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                    <button class="btn" id="data-analysis-photo-btn">
+                        <i class="fas fa-camera"></i> Take Photo
+                    </button>
+                    <input type="file" id="data-analysis-photo-input" accept="image/*" capture="environment" style="display: none">
+                </div>
+                
+                <button class="btn btn-success" data-save="data-analysis">Save Section</button>
+            </div>
+        </div>
+        
+        <!-- Learning Reflection -->
+        <div class="checklist-item" data-category="post-race" data-section="learning-reflection">
+            <div class="checklist-header">
+                <div class="checklist-title">Learning Reflection & Employer Involvement</div>
+                <div class="checklist-status status-pending">Pending</div>
+            </div>
+            <div class="checklist-content">
+                <div class="guidance-text">
+                    <p>Document how meaningful employer involvement has benefitted your learning during this inspection activity. Record what you have learned and how it will improve your future practice.</p>
+                </div>
+                
+                <div class="form-group">
+                    <label>Type of Employer Involvement</label>
+                    <select id="employer-involvement-type">
+                        <option value="">Select type of involvement</option>
+                        <option value="Work Experience">Structured work experience</option>
+                        <option value="Work Placement">Structured work placement</option>
+                        <option value="Industry Projects">Projects set with industry input</option>
+                        <option value="Master Class">Units delivered by industry practitioners</option>
+                        <option value="Expert Witness">Industry practitioners as expert witnesses</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="employer-involvement-duration">Duration of Involvement</label>
+                    <input type="text" id="employer-involvement-duration" placeholder="Enter duration (e.g., 2 days, 4 hours)">
+                </div>
+                
+                <div class="form-group">
+                    <label for="learning-reflection-notes">Reflection on Benefits and Learning</label>
+                    <textarea id="learning-reflection-notes" rows="5" placeholder="Explain how the employer involvement has benefitted you and what you have learned during this inspection activity"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Status</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" name="learning-reflection-status" id="learning-reflection-pass" value="pass">
+                            <label for="learning-reflection-pass">Complete</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="learning-reflection-status" id="learning-reflection-fail" value="fail">
+                            <label for="learning-reflection-fail">Incomplete</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="btn btn-success" data-save="learning-reflection">Save Section</button>
+            </div>
+        </div>
+        
+        <div class="action-buttons">
+            <button class="btn" id="back-to-during-race">Back</button>
+            <button class="btn btn-secondary" id="download-post-race-report">
+                <i class="fas fa-download"></i> Download Phase Report
+            </button>
+            <button class="btn btn-success" id="next-to-report">Generate Report</button>
+        </div>
+    </div>
+</div>
         
         <!-- Report Tab -->
         <div id="report" class="tab-content">
@@ -1737,12 +2349,12 @@
             postRace: {}
         };
         
-        // Define sections for each inspection category
-        const inspectionSections = {
-            preRace: ['safety-equipment', 'engine', 'suspension', 'brakes', 'tyres'],
-            duringRace: ['pit-safety', 'tyre-condition', 'brake-performance', 'fluid-levels'],
-            postRace: ['overall-condition', 'tyre-wear', 'brake-analysis', 'drivetrain', 'engine-performance']
-        };
+// Define sections for each inspection category
+const inspectionSections = {
+    preRace: ['safety-equipment', 'engine', 'suspension', 'brakes', 'tyres'],
+    duringRace: ['pit-safety', 'tyre-condition', 'brake-performance', 'fluid-levels'],
+    postRace: ['overall-condition', 'safety-systems', 'critical-fasteners', 'tyre-wear', 'brake-analysis', 'suspension-analysis', 'drivetrain', 'engine-performance', 'fluid-analysis', 'data-analysis', 'learning-reflection']
+};
         
         // Map category IDs to appData keys
         const categoryMap = {
